@@ -258,6 +258,14 @@ Tribal schools serve over **3,000 students**. They face unique challenges and de
 
 ---
 
+## Enrollment Visualizations
+
+<img src="https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png" alt="North Dakota statewide enrollment trends" width="600">
+
+<img src="https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png" alt="Top North Dakota districts" width="600">
+
+See the [full vignette](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks.html) for more insights.
+
 ## Installation
 
 ```r
