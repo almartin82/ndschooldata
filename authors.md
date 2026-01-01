@@ -9,12 +9,11 @@
 Source:
 [`DESCRIPTION`](https://github.com/almartin82/ndschooldata/blob/main/DESCRIPTION)
 
-Martin A (2026). *ndschooldata: Fetch and Process North Dakota School
-Data*. R package version 0.1.0,
-<https://almartin82.github.io/ndschooldata>.
+Martin A (2026). *ndschooldata: North Dakota School Data*. R package
+version 0.1.0, <https://almartin82.github.io/ndschooldata>.
 
     @Manual{,
-      title = {ndschooldata: Fetch and Process North Dakota School Data},
+      title = {ndschooldata: North Dakota School Data},
       author = {Al Martin},
       year = {2026},
       note = {R package version 0.1.0},
