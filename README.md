@@ -241,7 +241,7 @@ enr_2024 %>%
 Native American students are 8% of enrollment but concentrated in high-poverty districts.
 
 ```r
-# Native American enrollment (from NCES CCD demographics)
+# Native American enrollment
 # Note: Main NDDPI file doesn't include demographics
 enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
@@ -300,7 +300,7 @@ get_available_years()
 
 - **Levels:** State, district (~168)
 - **Grade levels:** K-12 plus totals
-- **Demographics:** Limited (not in main file; available via NCES CCD)
+- **Demographics:** Limited (not in main file; available via insights.nd.gov)
 
 ### What's NOT included
 
