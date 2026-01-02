@@ -1,0 +1,196 @@
+## ----setup, include = FALSE---------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 5,
+  warning = FALSE,
+  message = FALSE
+)
+
+## ----packages-----------------------------------------------------------------
+library(ndschooldata)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_minimal(base_size = 14))
+
+## ----statewide-data-----------------------------------------------------------
+enr <- fetch_enr_multi(2008:2024)
+
+statewide <- enr %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  select(end_year, n_students)
+
+statewide
+
+## ----statewide-chart----------------------------------------------------------
+ggplot(statewide, aes(x = end_year, y = n_students)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  geom_point(color = "#2E86AB", size = 3) +
+  geom_vline(xintercept = 2015, linetype = "dashed", color = "gray50", alpha = 0.7) +
+  annotate("text", x = 2015.5, y = max(statewide$n_students) * 0.95,
+           label = "Oil boom peak", hjust = 0, color = "gray40") +
+  scale_y_continuous(labels = scales::comma, limits = c(90000, NA)) +
+  labs(
+    title = "North Dakota K-12 Enrollment: 2008-2024",
+    subtitle = "From 97,000 to 117,000 students in 16 years",
+    x = "School Year (ending)",
+    y = "Total Students",
+    caption = "Source: North Dakota Department of Public Instruction"
+  )
+
+## ----top-districts-data-------------------------------------------------------
+enr_2024 <- fetch_enr(2024)
+
+top_districts <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(desc(n_students)) %>%
+  head(10) %>%
+  select(district_name, n_students) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name))
+
+top_districts
+
+## ----top-districts-chart------------------------------------------------------
+ggplot(top_districts, aes(x = reorder(district_name, n_students), y = n_students)) +
+  geom_col(fill = "#A23B72") +
+  geom_text(aes(label = scales::comma(n_students)), hjust = -0.1, size = 3.5) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Top 10 North Dakota School Districts by Enrollment (2024)",
+    subtitle = "Fargo has nearly twice the enrollment of Bismarck",
+    x = NULL,
+    y = "Total Students",
+    caption = "Source: North Dakota Department of Public Instruction"
+  )
+
+## ----growth-data--------------------------------------------------------------
+growth_districts <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("West Fargo|Fargo|Bismarck|Williston|Minot", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District| Basin", "", district_name)) %>%
+  filter(district_name %in% c("Fargo", "West Fargo", "Bismarck", "Williston", "Minot"))
+
+# Normalize to 2010 baseline
+growth_indexed <- growth_districts %>%
+  group_by(district_name) %>%
+  mutate(baseline = n_students[end_year == min(end_year)],
+         index = n_students / baseline * 100) %>%
+  ungroup()
+
+## ----growth-chart-------------------------------------------------------------
+ggplot(growth_indexed, aes(x = end_year, y = index, color = district_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "gray50") +
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    title = "District Growth Compared (Indexed to 2008 = 100)",
+    subtitle = "West Fargo and Williston saw explosive growth; others held steady",
+    x = "School Year (ending)",
+    y = "Enrollment Index (2008 = 100)",
+    color = "District",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
+
+## ----demographics-data--------------------------------------------------------
+grade_levels <- enr %>%
+  filter(is_state, subgroup == "total_enrollment") %>%
+  mutate(level = case_when(
+    grade_level %in% c("K", "01", "02", "03", "04", "05") ~ "Elementary (K-5)",
+    grade_level %in% c("06", "07", "08") ~ "Middle (6-8)",
+    grade_level %in% c("09", "10", "11", "12") ~ "High School (9-12)",
+    TRUE ~ NA_character_
+  )) %>%
+  filter(!is.na(level)) %>%
+  group_by(end_year, level) %>%
+  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+## ----demographics-chart-------------------------------------------------------
+ggplot(grade_levels, aes(x = end_year, y = total, fill = level)) +
+  geom_area(alpha = 0.8) +
+  scale_fill_manual(values = c("Elementary (K-5)" = "#F18F01",
+                               "Middle (6-8)" = "#C73E1D",
+                               "High School (9-12)" = "#3C1642")) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = "Enrollment by Grade Level: 2008-2024",
+    subtitle = "Elementary enrollment peaked and is now declining; high school still growing",
+    x = "School Year (ending)",
+    y = "Total Students",
+    fill = "Grade Level",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
+
+## ----regional-data------------------------------------------------------------
+size_dist <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  mutate(size_category = case_when(
+    n_students < 100 ~ "Under 100",
+    n_students < 500 ~ "100-499",
+    n_students < 1000 ~ "500-999",
+    n_students < 5000 ~ "1,000-4,999",
+    TRUE ~ "5,000+"
+  )) %>%
+  mutate(size_category = factor(size_category,
+                                levels = c("Under 100", "100-499", "500-999",
+                                          "1,000-4,999", "5,000+"))) %>%
+  count(size_category)
+
+size_dist
+
+## ----regional-chart-----------------------------------------------------------
+ggplot(size_dist, aes(x = size_category, y = n)) +
+  geom_col(fill = "#048A81") +
+  geom_text(aes(label = n), vjust = -0.5, size = 4, fontface = "bold") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    title = "North Dakota Districts by Size (2024)",
+    subtitle = "47 districts (28%) have fewer than 100 students",
+    x = "District Size (students)",
+    y = "Number of Districts",
+    caption = "Source: North Dakota Department of Public Instruction"
+  )
+
+## ----covid-data---------------------------------------------------------------
+covid_years <- enr %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL",
+         end_year %in% 2018:2024) %>%
+  select(end_year, n_students) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round(change / lag(n_students) * 100, 1))
+
+covid_years
+
+## ----covid-chart--------------------------------------------------------------
+ggplot(covid_years, aes(x = end_year, y = n_students)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  geom_point(aes(color = end_year == 2021), size = 4) +
+  geom_vline(xintercept = 2020.5, linetype = "dashed", color = "red", alpha = 0.5) +
+  annotate("text", x = 2020.7, y = max(covid_years$n_students),
+           label = "COVID-19", hjust = 0, color = "red", alpha = 0.7) +
+  scale_color_manual(values = c("FALSE" = "#2E86AB", "TRUE" = "#C73E1D"), guide = "none") +
+  scale_y_continuous(labels = scales::comma, limits = c(114000, NA)) +
+  labs(
+    title = "COVID Impact on North Dakota Enrollment",
+    subtitle = "Only -1.1% in 2021 vs. 3-5% drops in other states",
+    x = "School Year (ending)",
+    y = "Total Students",
+    caption = "Source: North Dakota Department of Public Instruction"
+  )
+
+## ----learn-more, eval=FALSE---------------------------------------------------
+# # Get started
+# library(ndschooldata)
+# 
+# # Fetch all available years
+# enr_all <- fetch_enr_multi(get_available_years())
+# 
+# # Explore your district
+# enr_all %>%
+#   filter(grepl("Your District", district_name))
+
