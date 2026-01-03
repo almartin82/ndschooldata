@@ -24,7 +24,7 @@
 #'
 #' @section Data Availability:
 #' \itemize{
-#'   \item Years: 2008 to 2026 (19 years of data)
+#'   \item Years: 2008 to 2025 (18 years of data)
 #'   \item Aggregation levels: State and District only (no campus/school level)
 #'   \item Demographics: NOT available in main file (see insights.nd.gov)
 #'   \item Grades: K-12 (no Pre-K in main file)

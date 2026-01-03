@@ -10,7 +10,7 @@
 #
 # File: EnrollmentHistoryPublicSchoolDistrict.xlsx
 #   - Multi-sheet Excel file with one sheet per school year
-#   - Sheet names: "2007-08" through "2025-26" (and newer as added)
+#   - Sheet names: "2007-08" through "2024-25" (and newer as added)
 #   - Each sheet contains district-level enrollment by grade
 #
 # ==============================================================================

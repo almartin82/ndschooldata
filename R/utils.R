@@ -70,14 +70,14 @@ end_year_to_sheet <- function(end_year) {
 #' Get available years from NDDPI data
 #'
 #' Returns the years available in the NDDPI enrollment data.
-#' Currently 2008-2026 (based on sheet names in the Excel file).
+#' Currently 2008-2025 (based on sheet names in the Excel file).
 #'
 #' @return Integer vector of available end years
 #' @export
 #' @examples
 #' get_available_years()
 get_available_years <- function() {
-  # Based on the Excel file sheets: 2007-08 through 2025-26
-  # These represent end years 2008 through 2026
-  2008L:2026L
+  # Based on the Excel file sheets: 2007-08 through 2024-25
+  # These represent end years 2008 through 2025
+  2008L:2025L
 }
