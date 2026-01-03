@@ -11,7 +11,7 @@ Integer vector of available end years
 }
 \description{
 Returns the years available in the NDDPI enrollment data.
-Currently 2008-2026 (based on sheet names in the Excel file).
+Currently 2008-2025 (based on sheet names in the Excel file).
 }
 \examples{
 get_available_years()
