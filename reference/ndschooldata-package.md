@@ -32,7 +32,7 @@ which contains district-level enrollment by grade from 2008 to present.
 
 ## Data Availability
 
-- Years: 2008 to 2026 (19 years of data)
+- Years: 2008 to 2025 (18 years of data)
 
 - Aggregation levels: State and District only (no campus/school level)
 

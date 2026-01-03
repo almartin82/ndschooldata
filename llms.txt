@@ -9,7 +9,7 @@ Dakota Department of Public Instruction in R or Python.
 
 ## What can you find with ndschooldata?
 
-**19 years of enrollment data (2008-2026).** 117,000 students today.
+**18 years of enrollment data (2008-2025).** 117,000 students today.
 Around 170 districts. Here are ten stories hiding in the numbers:
 
 ------------------------------------------------------------------------
@@ -345,7 +345,7 @@ print(f"Data available from {years['min_year']} to {years['max_year']}")
 
 | Years         | Source | Notes                                     |
 |---------------|--------|-------------------------------------------|
-| **2008-2026** | NDDPI  | District-level enrollment by grade (K-12) |
+| **2008-2025** | NDDPI  | District-level enrollment by grade (K-12) |
 
 ### What’s included
 
