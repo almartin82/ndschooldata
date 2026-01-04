@@ -19,6 +19,7 @@ Imports:
     purrr,
     httr,
     rappdirs,
+    rlang,
     utils
 Suggests:
     testthat (>= 3.0.0),

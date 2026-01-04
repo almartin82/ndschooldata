@@ -1,6 +1,3 @@
-#' @keywords internal
-"_PACKAGE"
-
 #' ndschooldata: North Dakota School Enrollment Data
 #'
 #' The ndschooldata package provides functions for downloading and processing
@@ -38,6 +35,6 @@
 #' }
 #' Example: "09-001" is Fargo Public Schools (Cass County, District 1)
 #'
-#' @docType package
-#' @name ndschooldata-package
-NULL
+#' @keywords internal
+#' @importFrom utils head
+"_PACKAGE"
