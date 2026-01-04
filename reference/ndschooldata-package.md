@@ -1,9 +1,4 @@
-# ndschooldata: Fetch and Process North Dakota School Data
-
-Downloads and processes school enrollment data from the North Dakota
-Department of Public Instruction (NDDPI). Provides functions for
-fetching enrollment data and transforming it into tidy format for
-analysis. Data is available from 2008 to present at the district level.
+# ndschooldata: North Dakota School Enrollment Data
 
 The ndschooldata package provides functions for downloading and
 processing school enrollment data from the North Dakota Department of
@@ -54,11 +49,7 @@ Example: "09-001" is Fargo Public Schools (Cass County, District 1)
 
 Useful links:
 
-- <https://github.com/almartin82/ndschooldata>
-
-- Report bugs at <https://github.com/almartin82/ndschooldata/issues>
-
-Useful links:
+- <https://almartin82.github.io/ndschooldata>
 
 - <https://github.com/almartin82/ndschooldata>
 
