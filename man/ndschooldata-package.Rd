@@ -2,11 +2,10 @@
 % Please edit documentation in R/ndschooldata-package.R
 \docType{package}
 \name{ndschooldata-package}
+\alias{ndschooldata}
 \alias{ndschooldata-package}
-\title{ndschooldata: Fetch and Process North Dakota School Data}
+\title{ndschooldata: North Dakota School Enrollment Data}
 \description{
-Downloads and processes school enrollment data from the North Dakota Department of Public Instruction (NDDPI). Provides functions for fetching enrollment data and transforming it into tidy format for analysis. Data is available from 2008 to present at the district level.
-
 The ndschooldata package provides functions for downloading and processing
 school enrollment data from the North Dakota Department of Public Instruction
 (NDDPI).
@@ -53,13 +52,7 @@ Example: "09-001" is Fargo Public Schools (Cass County, District 1)
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/almartin82/ndschooldata}
-  \item Report bugs at \url{https://github.com/almartin82/ndschooldata/issues}
-}
-
-
-Useful links:
-\itemize{
+  \item \url{https://almartin82.github.io/ndschooldata}
   \item \url{https://github.com/almartin82/ndschooldata}
   \item Report bugs at \url{https://github.com/almartin82/ndschooldata/issues}
 }
