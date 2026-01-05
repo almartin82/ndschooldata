@@ -1,8 +1,8 @@
 ---
-title: "10 Insights from North Dakota School Enrollment Data"
+title: "15 Insights from North Dakota School Enrollment Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{10 Insights from North Dakota School Enrollment Data}
+  %\VignetteIndexEntry{15 Insights from North Dakota School Enrollment Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -230,6 +230,175 @@ ggplot(covid_years, aes(x = end_year, y = n_students)) +
     y = "Total Students",
     caption = "Source: North Dakota Department of Public Instruction"
   )
+```
+
+## 7. Oil Counties vs. Traditional Farming Areas
+
+The Bakken oil formation transformed Williams and McKenzie counties while agricultural areas stayed flat.
+
+```{r oil-counties-data}
+oil_districts <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Williston|Watford|Tioga|Alexander|Dickinson|Mandan", district_name)) %>%
+  mutate(region = case_when(
+    grepl("Williston|Watford|Tioga|Alexander", district_name) ~ "Oil Counties",
+    TRUE ~ "Traditional"
+  )) %>%
+  group_by(end_year, region) %>%
+  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop")
+```
+
+```{r oil-counties-chart}
+ggplot(oil_districts, aes(x = end_year, y = total, color = region)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("Oil Counties" = "#E63946", "Traditional" = "#457B9D")) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = "Oil Boom Counties vs. Traditional Areas",
+    subtitle = "Williams/McKenzie oil counties surged while Dickinson/Mandan held steady",
+    x = "School Year (ending)",
+    y = "Combined Enrollment",
+    color = "Region",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 8. Bismarck: Steady Growth as State Capital
+
+While Fargo and West Fargo grab headlines, Bismarck's enrollment has grown steadily without the volatility.
+
+```{r bismarck-data}
+bismarck_growth <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Bismarck|Fargo|West Fargo", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name)) %>%
+  filter(district_name %in% c("Bismarck", "Fargo", "West Fargo")) %>%
+  group_by(district_name) %>%
+  mutate(yoy_change = (n_students - lag(n_students)) / lag(n_students) * 100) %>%
+  ungroup() %>%
+  filter(!is.na(yoy_change))
+```
+
+```{r bismarck-chart}
+ggplot(bismarck_growth, aes(x = end_year, y = yoy_change, color = district_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("Bismarck" = "#1D3557", "Fargo" = "#E63946", "West Fargo" = "#A8DADC")) +
+  labs(
+    title = "Year-over-Year Enrollment Change: Big Three Districts",
+    subtitle = "Bismarck grows steadily; West Fargo shows boom-era volatility",
+    x = "School Year (ending)",
+    y = "Percent Change from Previous Year",
+    color = "District",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 9. Kindergarten as a Leading Indicator
+
+Kindergarten enrollment predicts total enrollment 12 years later. The recent K decline signals future challenges.
+
+```{r kindergarten-data}
+k_vs_total <- enr %>%
+  filter(is_state, subgroup == "total_enrollment") %>%
+  filter(grade_level %in% c("K", "TOTAL")) %>%
+  select(end_year, grade_level, n_students) %>%
+  pivot_wider(names_from = grade_level, values_from = n_students) %>%
+  rename(kindergarten = K, total = TOTAL) %>%
+  mutate(k_pct = kindergarten / total * 100)
+```
+
+```{r kindergarten-chart}
+ggplot(k_vs_total, aes(x = end_year)) +
+  geom_line(aes(y = kindergarten), color = "#F18F01", linewidth = 1.2) +
+  geom_point(aes(y = kindergarten), color = "#F18F01", size = 2) +
+  geom_vline(xintercept = 2019, linetype = "dashed", color = "gray50", alpha = 0.7) +
+  annotate("text", x = 2019.3, y = max(k_vs_total$kindergarten, na.rm = TRUE) * 0.95,
+           label = "Peak K enrollment", hjust = 0, color = "gray40", size = 3) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = "Kindergarten Enrollment: The Pipeline Indicator",
+    subtitle = "K enrollment peaked in 2019 and has declined since",
+    x = "School Year (ending)",
+    y = "Kindergarten Students",
+    caption = "Source: North Dakota Department of Public Instruction"
+  )
+```
+
+## 10. Grand Forks: Rebuilding After the Flood
+
+Grand Forks lost population after the devastating 1997 flood but has stabilized in recent years.
+
+```{r grandforks-data}
+gf_trend <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Grand Forks|Fargo|Minot", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name)) %>%
+  filter(district_name %in% c("Grand Forks", "Fargo", "Minot")) %>%
+  group_by(district_name) %>%
+  mutate(indexed = n_students / first(n_students) * 100) %>%
+  ungroup()
+```
+
+```{r grandforks-chart}
+ggplot(gf_trend, aes(x = end_year, y = indexed, color = district_name)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("Grand Forks" = "#2A9D8F", "Fargo" = "#E76F51", "Minot" = "#264653")) +
+  labs(
+    title = "Grand Forks, Fargo, and Minot: Growth Trajectories",
+    subtitle = "Grand Forks has stabilized after decades of population loss",
+    x = "School Year (ending)",
+    y = "Enrollment Index (2008 = 100)",
+    color = "District",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 11. The Smallest Districts Are Getting Smaller
+
+Rural consolidation continues as tiny districts shrink further.
+
+```{r smallest-data}
+# Track smallest districts over time
+small_district_trend <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  group_by(end_year) %>%
+  summarize(
+    under_50 = sum(n_students < 50, na.rm = TRUE),
+    under_100 = sum(n_students < 100, na.rm = TRUE),
+    under_200 = sum(n_students < 200, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = starts_with("under"), names_to = "category", values_to = "count") %>%
+  mutate(category = case_when(
+    category == "under_50" ~ "Under 50 students",
+    category == "under_100" ~ "Under 100 students",
+    category == "under_200" ~ "Under 200 students"
+  ))
+```
+
+```{r smallest-chart}
+ggplot(small_district_trend, aes(x = end_year, y = count, fill = category)) +
+  geom_area(alpha = 0.7, position = "identity") +
+  scale_fill_manual(values = c("Under 50 students" = "#C73E1D",
+                                "Under 100 students" = "#F18F01",
+                                "Under 200 students" = "#048A81")) +
+  labs(
+    title = "Small Districts in North Dakota Over Time",
+    subtitle = "The number of tiny districts remains high despite consolidation pressure",
+    x = "School Year (ending)",
+    y = "Number of Districts",
+    fill = "Size Category",
+    caption = "Source: North Dakota Department of Public Instruction"
+  ) +
+  theme(legend.position = "bottom")
 ```
 
 ## Learn More
