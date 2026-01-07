@@ -320,7 +320,26 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check available years</span></span>
-<span><span class="fu"><a href="reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Fetch graduation rates</span></span>
+<span><span class="va">grad_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_graduation.html">fetch_graduation</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># State graduation rate</span></span>
+<span><span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">grad_rate</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># District graduation rates</span></span>
+<span><span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Graduation rate by subgroup (state level)</span></span>
+<span><span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"native_american"</span>, <span class="st">"white"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
@@ -356,37 +375,44 @@
 <h2 id="data-availability">Data availability<a class="anchor" aria-label="anchor" href="#data-availability"></a>
 </h2>
 <table class="table">
+<colgroup>
+<col width="31%">
+<col width="36%">
+<col width="31%">
+</colgroup>
 <thead><tr class="header">
 <th>Years</th>
 <th>Source</th>
 <th>Notes</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody>
+<tr class="odd">
 <td><strong>2008-2025</strong></td>
 <td>NDDPI</td>
 <td>District-level enrollment by grade (K-12)</td>
-</tr></tbody>
+</tr>
+<tr class="even">
+<td><strong>2013-2024</strong></td>
+<td>ND Insights</td>
+<td>4-year cohort graduation rates (state, district, school)</td>
+</tr>
+</tbody>
 </table>
 <div class="section level3">
 <h3 id="whats-included">What’s included<a class="anchor" aria-label="anchor" href="#whats-included"></a>
 </h3>
-<ul>
-<li>
-<strong>Levels:</strong> State, district (~168)</li>
-<li>
-<strong>Grade levels:</strong> K-12 plus totals</li>
-<li>
-<strong>Demographics:</strong> Limited (not in main file; available via insights.nd.gov)</li>
-</ul>
+<p><strong>Enrollment data:</strong> - <strong>Levels:</strong> State, district (~168) - <strong>Grade levels:</strong> K-12 plus totals - <strong>Demographics:</strong> Limited (not in main file; available via insights.nd.gov)</p>
+<p><strong>Graduation rate data:</strong> - <strong>Levels:</strong> State, district (~168), school (~450) - <strong>Years:</strong> 2013-2024 (12 years) - <strong>Cohort type:</strong> 4-year adjusted cohort graduation rate (ACGR) - <strong>Subgroups:</strong> All, male, female, white, Black, Hispanic, Asian American, Native American, English Learner, IEP, Low Income, and more</p>
 </div>
 <div class="section level3">
 <h3 id="whats-not-included">What’s NOT included<a class="anchor" aria-label="anchor" href="#whats-not-included"></a>
 </h3>
 <ul>
-<li>School-level data (only district aggregates)</li>
-<li>Race/ethnicity demographics (available separately via insights.nd.gov)</li>
-<li>Special populations (LEP, Special Ed, FRPL)</li>
 <li>Pre-K enrollment</li>
+<li>Assessment scores</li>
+<li>Attendance rates</li>
+<li>College enrollment data</li>
+<li>Traditional graduation rates (5-year, extended cohort)</li>
 </ul>
 </div>
 <div class="section level3">

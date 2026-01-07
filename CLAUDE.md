@@ -144,3 +144,172 @@ auto-update on merge:
 **Why:** Vignette figures regenerate automatically when pkgdown builds.
 Manual `man/figures/` requires running a separate script and is easy to
 forget, causing stale/broken images.
+
+------------------------------------------------------------------------
+
+## Graduation Rate Data (Stage 1 Complete - Ready for Stage 2 TDD)
+
+**Status:** Research complete, ready for implementation **Implementation
+Difficulty:** EASY (Tier 1) **Last Updated:** 2026-01-07
+
+### Data Source
+
+**Portal:** ND Insights (insights.nd.gov) **Base URL:**
+`https://insights.nd.gov/ShowFile?f=10039_39_csv_{ACADEMIC_YEAR}` **File
+Format:** CSV with UTF-8 encoding **Years Available:** 2012-2013 through
+2024-2025 (13 years) **Access Method:** Direct HTTP GET, no
+authentication required
+
+### URL Pattern
+
+    https://insights.nd.gov/ShowFile?f=10039_39_csv_{START_YEAR}-{END_YEAR}
+
+**Examples:** - 2023-2024:
+`https://insights.nd.gov/ShowFile?f=10039_39_csv_2023-2024` - 2018-2019:
+`https://insights.nd.gov/ShowFile?f=10039_39_csv_2018-2019` - 2012-2013:
+`https://insights.nd.gov/ShowFile?f=10039_39_csv_2012-2013`
+
+**All 13 years verified:** HTTP 200 status confirmed
+
+### File Format Quirk
+
+**IMPORTANT:** Each CSV file has an HTML meta tag on the first line:
+
+    <meta http-quiv='ContentType' content='text/csv; charset=UTF8'>
+
+**Solution:** Use `skip = 1` when parsing with
+[`readr::read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+
+### Data Schema (Consistent Across All Years)
+
+| Column                      | Type      | Description                                             |
+|-----------------------------|-----------|---------------------------------------------------------|
+| AcademicYear                | character | “YYYY-YYYY” format (e.g., “2023-2024”)                  |
+| EntityLevel                 | character | “State”, “District”, or “School”                        |
+| InstitutionName             | character | Institution name                                        |
+| InstitutionID               | character | 5-digit district, 10-digit school, or “99999” for state |
+| Subgroup                    | character | Demographic subgroup (see below)                        |
+| FourYearGradRate            | numeric   | Graduation rate as decimal (0.0 to 1.0)                 |
+| FourYearCohortGraduateCount | integer   | Number of graduates                                     |
+| TotalFourYearCohort         | integer   | Total cohort size                                       |
+
+**No schema changes observed** across 13 years - column names identical
+in all files.
+
+### Subgroups Available (2023-2024)
+
+All students, Male, Female, White, Black, Hispanic, Asian American,
+Native American, Native Hawaiian or Pacific Islander, English Learner,
+Former English Learner, IEP (student with disabilities), IEP - Emotional
+Disturbance, IEP - English Learner, Low Income, Foster Care, Homeless,
+Migrant, Military.
+
+**Note:** Subgroup set expanded over time (13 in 2012 → 19 in 2018+).
+All subgroups are additive (no breaking changes).
+
+### ID System
+
+**State ID:** “99999” **District IDs:** 5 digits (preserve leading
+zeros, e.g., “27002”) **School IDs:** 10 digits (district ID + school
+code, e.g., “2700203153”)
+
+### Verified Fidelity Values
+
+#### 2023-2024 State Totals
+
+- All Students Grad Rate: 0.824 (82.4%)
+- Cohort Size: 8,681
+- Graduate Count: 7,154
+- Native American Grad Rate: 0.634 (63.4%)
+- White Grad Rate: 0.875 (87.5%)
+
+#### 2018-2019 State Totals
+
+- All Students Grad Rate: 0.883 (88.3%)
+- Cohort Size: 7,626
+- Graduate Count: 6,730
+
+#### 2012-2013 State Totals (First Year)
+
+- All Students Grad Rate: 0.872 (87.2%)
+- Cohort Size: 7,567
+- Graduate Count: 6,598
+
+### Data Quality
+
+**Excellent** - No issues found: - No division errors (/0 or \#DIV/0!) -
+No negative values - No invalid percentages (\> 100%) - Cohort counts
+\>= graduate counts (always) - State record present in all years
+
+**Privacy Suppression:** Data suppressed when cohort \< 10 students
+(marked as \* or empty)
+
+### Implementation Notes
+
+#### Year Conversion
+
+- **Input format:** Academic year “2023-2024”
+- **Package convention:** End year integer 2024
+- **Conversion:** `end_year <- as.integer(substr(academic_year, 6, 9))`
+
+#### Required R Packages
+
+``` r
+Imports:
+    dplyr,
+    tidyr,
+    readr,   # CSV parsing
+    httr,    # HTTP requests
+    tibble
+```
+
+No additional dependencies needed (no pdftools, readxl, RSelenium, etc.)
+
+#### Implementation Complexity
+
+**EASY** - Estimated 2-3 hours - Direct HTTP GET (no auth) - CSV format
+(simple parsing) - Consistent schema (no era detection) - Predictable
+URL pattern - All years available (no gaps)
+
+### Test Strategy
+
+**LIVE Pipeline Tests (8 categories):** 1. URL availability (HTTP 200)
+2. File download (correct size) 3. File parsing (readr succeeds) 4.
+Column structure (expected columns present) 5. Year extraction (single
+year works) 6. Data quality (no Inf/NaN, valid ranges) 7. Aggregation
+(state record exists) 8. Output fidelity (tidy matches raw)
+
+**Raw Data Fidelity Tests:** - Test 3+ years (2013, 2019, 2024) - Use
+exact values from this document - Test state totals and key subgroups -
+Verify cohort counts and graduate counts
+
+### Additional Data Sources (Not Required)
+
+**Traditional Graduation Rate:** - File ID: `10011_11_csv_{YEAR}` -
+Years: 2013-2014 through 2024-2025 (12 years) - Description: Percentage
+of 12th graders who graduated
+
+**Dropout Rate:** - File ID: `10024_24_csv_{YEAR}` - Years: 2019-2020
+through 2024-2025 (6 years) - Description: Dropout rate ranges (not
+exact values)
+
+### Research Documentation
+
+Comprehensive research report:
+`/Users/almartin/Documents/state-schooldata/docs/ND-GRADUATION-RESEARCH.md`
+
+Includes: - Complete URL verification for all 13 years - Sample data
+files downloaded and examined - Full schema documentation - Test
+strategy with verified values - Implementation code snippets
+
+### Next Steps (Stage 2: TDD)
+
+1.  Write LIVE pipeline tests (8 tests)
+2.  Write raw data fidelity tests (6+ tests)
+3.  Watch tests fail (TDD approach)
+4.  Implement functions to make tests pass
+5.  Update documentation
+
+**Proof of Concept Candidate:** ND is recommended in
+GRADUATION-RATE-IMPLEMENTATION-PLAN.md as one of the first 4 Tier 1
+states to implement (MA, ND, PA, VA).

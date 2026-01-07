@@ -148,6 +148,145 @@
 <p>README images MUST come from pkgdown-generated vignette output so they auto-update on merge:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="al">![Chart name](https://almartin82.github.io/{package}/articles/{vignette}_files/figure-html/{chunk-name}-1.png)</span></span></code></pre></div>
 <p><strong>Why:</strong> Vignette figures regenerate automatically when pkgdown builds. Manual <code>man/figures/</code> requires running a separate script and is easy to forget, causing stale/broken images.</p>
+<hr></div>
+<div class="section level2">
+<h2 id="graduation-rate-data-stage-1-complete---ready-for-stage-2-tdd">Graduation Rate Data (Stage 1 Complete - Ready for Stage 2 TDD)<a class="anchor" aria-label="anchor" href="#graduation-rate-data-stage-1-complete---ready-for-stage-2-tdd"></a></h2>
+<p><strong>Status:</strong> Research complete, ready for implementation <strong>Implementation Difficulty:</strong> EASY (Tier 1) <strong>Last Updated:</strong> 2026-01-07</p>
+<div class="section level3">
+<h3 id="data-source">Data Source<a class="anchor" aria-label="anchor" href="#data-source"></a></h3>
+<p><strong>Portal:</strong> ND Insights (insights.nd.gov) <strong>Base URL:</strong> <code>https://insights.nd.gov/ShowFile?f=10039_39_csv_{ACADEMIC_YEAR}</code> <strong>File Format:</strong> CSV with UTF-8 encoding <strong>Years Available:</strong> 2012-2013 through 2024-2025 (13 years) <strong>Access Method:</strong> Direct HTTP GET, no authentication required</p>
+</div>
+<div class="section level3">
+<h3 id="url-pattern">URL Pattern<a class="anchor" aria-label="anchor" href="#url-pattern"></a></h3>
+<pre><code>https://insights.nd.gov/ShowFile?f=10039_39_csv_{START_YEAR}-{END_YEAR}</code></pre>
+<p><strong>Examples:</strong> - 2023-2024: <code>https://insights.nd.gov/ShowFile?f=10039_39_csv_2023-2024</code> - 2018-2019: <code>https://insights.nd.gov/ShowFile?f=10039_39_csv_2018-2019</code> - 2012-2013: <code>https://insights.nd.gov/ShowFile?f=10039_39_csv_2012-2013</code></p>
+<p><strong>All 13 years verified:</strong> HTTP 200 status confirmed</p>
+</div>
+<div class="section level3">
+<h3 id="file-format-quirk">File Format Quirk<a class="anchor" aria-label="anchor" href="#file-format-quirk"></a></h3>
+<p><strong>IMPORTANT:</strong> Each CSV file has an HTML meta tag on the first line:</p>
+<pre><code>&lt;meta http-quiv='ContentType' content='text/csv; charset=UTF8'&gt;</code></pre>
+<p><strong>Solution:</strong> Use <code>skip = 1</code> when parsing with <code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">readr::read_csv()</a></code></p>
+</div>
+<div class="section level3">
+<h3 id="data-schema-consistent-across-all-years">Data Schema (Consistent Across All Years)<a class="anchor" aria-label="anchor" href="#data-schema-consistent-across-all-years"></a></h3>
+<table class="table"><colgroup><col width="29%"><col width="22%"><col width="48%"></colgroup><thead><tr class="header"><th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead><tbody><tr class="odd"><td>AcademicYear</td>
+<td>character</td>
+<td>“YYYY-YYYY” format (e.g., “2023-2024”)</td>
+</tr><tr class="even"><td>EntityLevel</td>
+<td>character</td>
+<td>“State”, “District”, or “School”</td>
+</tr><tr class="odd"><td>InstitutionName</td>
+<td>character</td>
+<td>Institution name</td>
+</tr><tr class="even"><td>InstitutionID</td>
+<td>character</td>
+<td>5-digit district, 10-digit school, or “99999” for state</td>
+</tr><tr class="odd"><td>Subgroup</td>
+<td>character</td>
+<td>Demographic subgroup (see below)</td>
+</tr><tr class="even"><td>FourYearGradRate</td>
+<td>numeric</td>
+<td>Graduation rate as decimal (0.0 to 1.0)</td>
+</tr><tr class="odd"><td>FourYearCohortGraduateCount</td>
+<td>integer</td>
+<td>Number of graduates</td>
+</tr><tr class="even"><td>TotalFourYearCohort</td>
+<td>integer</td>
+<td>Total cohort size</td>
+</tr></tbody></table><p><strong>No schema changes observed</strong> across 13 years - column names identical in all files.</p>
+</div>
+<div class="section level3">
+<h3 id="subgroups-available-2023-2024">Subgroups Available (2023-2024)<a class="anchor" aria-label="anchor" href="#subgroups-available-2023-2024"></a></h3>
+<p>All students, Male, Female, White, Black, Hispanic, Asian American, Native American, Native Hawaiian or Pacific Islander, English Learner, Former English Learner, IEP (student with disabilities), IEP - Emotional Disturbance, IEP - English Learner, Low Income, Foster Care, Homeless, Migrant, Military.</p>
+<p><strong>Note:</strong> Subgroup set expanded over time (13 in 2012 → 19 in 2018+). All subgroups are additive (no breaking changes).</p>
+</div>
+<div class="section level3">
+<h3 id="id-system">ID System<a class="anchor" aria-label="anchor" href="#id-system"></a></h3>
+<p><strong>State ID:</strong> “99999” <strong>District IDs:</strong> 5 digits (preserve leading zeros, e.g., “27002”) <strong>School IDs:</strong> 10 digits (district ID + school code, e.g., “2700203153”)</p>
+</div>
+<div class="section level3">
+<h3 id="verified-fidelity-values">Verified Fidelity Values<a class="anchor" aria-label="anchor" href="#verified-fidelity-values"></a></h3>
+<div class="section level4">
+<h4 id="id_2023-2024-state-totals">2023-2024 State Totals<a class="anchor" aria-label="anchor" href="#id_2023-2024-state-totals"></a></h4>
+<ul><li>All Students Grad Rate: 0.824 (82.4%)</li>
+<li>Cohort Size: 8,681</li>
+<li>Graduate Count: 7,154</li>
+<li>Native American Grad Rate: 0.634 (63.4%)</li>
+<li>White Grad Rate: 0.875 (87.5%)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="id_2018-2019-state-totals">2018-2019 State Totals<a class="anchor" aria-label="anchor" href="#id_2018-2019-state-totals"></a></h4>
+<ul><li>All Students Grad Rate: 0.883 (88.3%)</li>
+<li>Cohort Size: 7,626</li>
+<li>Graduate Count: 6,730</li>
+</ul></div>
+<div class="section level4">
+<h4 id="id_2012-2013-state-totals-first-year">2012-2013 State Totals (First Year)<a class="anchor" aria-label="anchor" href="#id_2012-2013-state-totals-first-year"></a></h4>
+<ul><li>All Students Grad Rate: 0.872 (87.2%)</li>
+<li>Cohort Size: 7,567</li>
+<li>Graduate Count: 6,598</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="data-quality">Data Quality<a class="anchor" aria-label="anchor" href="#data-quality"></a></h3>
+<p><strong>Excellent</strong> - No issues found: - No division errors (/0 or #DIV/0!) - No negative values - No invalid percentages (&gt; 100%) - Cohort counts &gt;= graduate counts (always) - State record present in all years</p>
+<p><strong>Privacy Suppression:</strong> Data suppressed when cohort &lt; 10 students (marked as * or empty)</p>
+</div>
+<div class="section level3">
+<h3 id="implementation-notes">Implementation Notes<a class="anchor" aria-label="anchor" href="#implementation-notes"></a></h3>
+<div class="section level4">
+<h4 id="year-conversion">Year Conversion<a class="anchor" aria-label="anchor" href="#year-conversion"></a></h4>
+<ul><li>
+<strong>Input format:</strong> Academic year “2023-2024”</li>
+<li>
+<strong>Package convention:</strong> End year integer 2024</li>
+<li>
+<strong>Conversion:</strong> <code>end_year &lt;- as.integer(substr(academic_year, 6, 9))</code>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="required-r-packages">Required R Packages<a class="anchor" aria-label="anchor" href="#required-r-packages"></a></h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>Imports<span class="sc">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    dplyr,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    tidyr,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    readr,   <span class="co"># CSV parsing</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    httr,    <span class="co"># HTTP requests</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    tibble</span></code></pre></div>
+<p>No additional dependencies needed (no pdftools, readxl, RSelenium, etc.)</p>
+</div>
+<div class="section level4">
+<h4 id="implementation-complexity">Implementation Complexity<a class="anchor" aria-label="anchor" href="#implementation-complexity"></a></h4>
+<p><strong>EASY</strong> - Estimated 2-3 hours - Direct HTTP GET (no auth) - CSV format (simple parsing) - Consistent schema (no era detection) - Predictable URL pattern - All years available (no gaps)</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="test-strategy">Test Strategy<a class="anchor" aria-label="anchor" href="#test-strategy"></a></h3>
+<p><strong>LIVE Pipeline Tests (8 categories):</strong> 1. URL availability (HTTP 200) 2. File download (correct size) 3. File parsing (readr succeeds) 4. Column structure (expected columns present) 5. Year extraction (single year works) 6. Data quality (no Inf/NaN, valid ranges) 7. Aggregation (state record exists) 8. Output fidelity (tidy matches raw)</p>
+<p><strong>Raw Data Fidelity Tests:</strong> - Test 3+ years (2013, 2019, 2024) - Use exact values from this document - Test state totals and key subgroups - Verify cohort counts and graduate counts</p>
+</div>
+<div class="section level3">
+<h3 id="additional-data-sources-not-required">Additional Data Sources (Not Required)<a class="anchor" aria-label="anchor" href="#additional-data-sources-not-required"></a></h3>
+<p><strong>Traditional Graduation Rate:</strong> - File ID: <code>10011_11_csv_{YEAR}</code> - Years: 2013-2014 through 2024-2025 (12 years) - Description: Percentage of 12th graders who graduated</p>
+<p><strong>Dropout Rate:</strong> - File ID: <code>10024_24_csv_{YEAR}</code> - Years: 2019-2020 through 2024-2025 (6 years) - Description: Dropout rate ranges (not exact values)</p>
+</div>
+<div class="section level3">
+<h3 id="research-documentation">Research Documentation<a class="anchor" aria-label="anchor" href="#research-documentation"></a></h3>
+<p>Comprehensive research report: <code>/Users/almartin/Documents/state-schooldata/docs/ND-GRADUATION-RESEARCH.md</code></p>
+<p>Includes: - Complete URL verification for all 13 years - Sample data files downloaded and examined - Full schema documentation - Test strategy with verified values - Implementation code snippets</p>
+</div>
+<div class="section level3">
+<h3 id="next-steps-stage-2-tdd">Next Steps (Stage 2: TDD)<a class="anchor" aria-label="anchor" href="#next-steps-stage-2-tdd"></a></h3>
+<ol style="list-style-type: decimal"><li>Write LIVE pipeline tests (8 tests)</li>
+<li>Write raw data fidelity tests (6+ tests)</li>
+<li>Watch tests fail (TDD approach)</li>
+<li>Implement functions to make tests pass</li>
+<li>Update documentation</li>
+</ol><p><strong>Proof of Concept Candidate:</strong> ND is recommended in GRADUATION-RATE-IMPLEMENTATION-PLAN.md as one of the first 4 Tier 1 states to implement (MA, ND, PA, VA).</p>
+</div>
 </div>
 </div>
 
