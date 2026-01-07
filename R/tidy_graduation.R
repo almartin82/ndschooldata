@@ -22,36 +22,36 @@ tidy_graduation <- function(processed_data, end_year) {
 
   tidy <- processed_data |>
     dplyr::mutate(
-      # Convert entity_level to type (State, District, School)
-      type = entity_level,
+      # Convert EntityLevel to type (State, District, School)
+      type = EntityLevel,
 
-      # Split institution_id into district_id and school_id
+      # Split InstitutionID into district_id and school_id
       district_id = dplyr::case_when(
-        entity_level == "State" ~ "99999",
-        entity_level == "District" ~ institution_id,
-        entity_level == "School" ~ substr(institution_id, 1, 5),
+        EntityLevel == "State" ~ "99999",
+        EntityLevel == "District" ~ InstitutionID,
+        EntityLevel == "School" ~ substr(InstitutionID, 1, 5),
         TRUE ~ NA_character_
       ),
 
       school_id = dplyr::case_when(
-        entity_level == "State" ~ NA_character_,
-        entity_level == "District" ~ NA_character_,
-        entity_level == "School" ~ institution_id,
+        EntityLevel == "State" ~ NA_character_,
+        EntityLevel == "District" ~ NA_character_,
+        EntityLevel == "School" ~ InstitutionID,
         TRUE ~ NA_character_
       ),
 
       # Names
       district_name = dplyr::case_when(
-        entity_level == "State" ~ "State of North Dakota",
-        entity_level == "District" ~ institution_name,
-        entity_level == "School" ~ NA_character_,  # Will fill in via join below
+        EntityLevel == "State" ~ "State of North Dakota",
+        EntityLevel == "District" ~ InstitutionName,
+        EntityLevel == "School" ~ NA_character_,  # Will fill in via join below
         TRUE ~ NA_character_
       ),
 
       school_name = dplyr::case_when(
-        entity_level == "State" ~ NA_character_,
-        entity_level == "District" ~ NA_character_,
-        entity_level == "School" ~ institution_name,
+        EntityLevel == "State" ~ NA_character_,
+        EntityLevel == "District" ~ NA_character_,
+        EntityLevel == "School" ~ InstitutionName,
         TRUE ~ NA_character_
       ),
 
@@ -59,11 +59,11 @@ tidy_graduation <- function(processed_data, end_year) {
       cohort_type = "4-year",
 
       # Add aggregation flags
-      is_state = entity_level == "State",
-      is_district = entity_level == "District",
-      is_school = entity_level == "School"
+      is_state = EntityLevel == "State",
+      is_district = EntityLevel == "District",
+      is_school = EntityLevel == "School"
     ) |>
-    # Select standard columns
+    # Select standard columns (using original column names for counts/rates)
     dplyr::select(
       end_year,
       type,
@@ -71,11 +71,11 @@ tidy_graduation <- function(processed_data, end_year) {
       district_name,
       school_id,
       school_name,
-      subgroup,
+      subgroup = Subgroup,
       cohort_type,
-      cohort_count,
-      graduate_count,
-      grad_rate,
+      cohort_count = TotalFourYearCohort,
+      graduate_count = FourYearCohortGraduateCount,
+      grad_rate = FourYearGradRate,
       is_state,
       is_district,
       is_school

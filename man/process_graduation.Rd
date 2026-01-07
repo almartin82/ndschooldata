@@ -16,5 +16,7 @@ Data frame with standardized column names
 }
 \description{
 Standardizes column names and types from the raw ND Insights CSV data.
+Note: When tidy=FALSE, keeps original column names (EntityLevel, etc.)
+When tidy=TRUE, converts to lowercase with underscores.
 }
 \keyword{internal}
