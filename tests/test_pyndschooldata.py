@@ -33,3 +33,10 @@ def test_has_version():
     import pyndschooldata
     assert hasattr(pyndschooldata, '__version__')
     assert isinstance(pyndschooldata.__version__, str)
+
+
+def test_has_fetch_graduation():
+    """fetch_graduation function is available."""
+    import pyndschooldata
+    assert hasattr(pyndschooldata, 'fetch_graduation')
+    assert callable(pyndschooldata.fetch_graduation)
