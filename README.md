@@ -300,6 +300,25 @@ enr_2024 %>%
 
 # Check available years
 get_available_years()
+
+# Fetch graduation rates
+grad_2024 <- fetch_graduation(2024)
+
+# State graduation rate
+grad_2024 %>%
+  filter(is_state, subgroup == "all") %>%
+  select(grad_rate, cohort_count, graduate_count)
+
+# District graduation rates
+grad_2024 %>%
+  filter(is_district, subgroup == "all") %>%
+  arrange(desc(grad_rate)) %>%
+  select(district_name, grad_rate, cohort_count)
+
+# Graduation rate by subgroup (state level)
+grad_2024 %>%
+  filter(is_state, subgroup %in% c("all", "male", "female", "native_american", "white")) %>%
+  select(subgroup, grad_rate, cohort_count)
 ```
 
 ### Python
@@ -337,19 +356,28 @@ print(f"Data available from {years['min_year']} to {years['max_year']}")
 | Years | Source | Notes |
 |-------|--------|-------|
 | **2008-2025** | NDDPI | District-level enrollment by grade (K-12) |
+| **2013-2024** | ND Insights | 4-year cohort graduation rates (state, district, school) |
 
 ### What's included
 
+**Enrollment data:**
 - **Levels:** State, district (~168)
 - **Grade levels:** K-12 plus totals
 - **Demographics:** Limited (not in main file; available via insights.nd.gov)
 
+**Graduation rate data:**
+- **Levels:** State, district (~168), school (~450)
+- **Years:** 2013-2024 (12 years)
+- **Cohort type:** 4-year adjusted cohort graduation rate (ACGR)
+- **Subgroups:** All, male, female, white, Black, Hispanic, Asian American, Native American, English Learner, IEP, Low Income, and more
+
 ### What's NOT included
 
-- School-level data (only district aggregates)
-- Race/ethnicity demographics (available separately via insights.nd.gov)
-- Special populations (LEP, Special Ed, FRPL)
 - Pre-K enrollment
+- Assessment scores
+- Attendance rates
+- College enrollment data
+- Traditional graduation rates (5-year, extended cohort)
 
 ### District ID format
 

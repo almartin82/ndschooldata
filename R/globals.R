@@ -14,5 +14,30 @@ utils::globalVariables(c(
   "n_students",
   "row_total",
   "subgroup",
-  "type"
+  "type",
+  # Graduation rate variables (processed)
+  "academic_year",
+  "entity_level",
+  "institution_name",
+  "institution_id",
+  "grad_rate",
+  "graduate_count",
+  "cohort_count",
+  "cohort_type",
+  "district_id",
+  "district_name",
+  "school_id",
+  "school_name",
+  "is_state",
+  "is_district",
+  "is_school",
+  # Graduation rate variables (raw CSV column names)
+  "AcademicYear",
+  "EntityLevel",
+  "InstitutionName",
+  "InstitutionID",
+  "Subgroup",
+  "FourYearGradRate",
+  "FourYearCohortGraduateCount",
+  "TotalFourYearCohort"
 ))

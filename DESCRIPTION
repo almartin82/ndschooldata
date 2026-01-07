@@ -20,7 +20,9 @@ Imports:
     httr,
     rappdirs,
     rlang,
-    utils
+    utils,
+    readr,
+    stringr
 Suggests:
     testthat (>= 3.0.0),
     knitr,
