@@ -11,7 +11,7 @@ Integer vector of available end years
 }
 \description{
 Returns the years available in the ND Insights graduation rate data.
-Currently 2013-2025 (based on verified CSV downloads).
+Currently 2013-2024 (based on verified CSV downloads).
 }
 \examples{
 get_available_grad_years()

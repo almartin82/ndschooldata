@@ -7,6 +7,9 @@
 #
 # ==============================================================================
 
+#' @importFrom dplyr n
+NULL
+
 # To silence R CMD check NOTEs about "no visible binding for global variable"
 # These are column names used in dplyr expressions
 utils::globalVariables(c(
@@ -41,3 +44,4 @@ utils::globalVariables(c(
   "FourYearCohortGraduateCount",
   "TotalFourYearCohort"
 ))
+

@@ -48,9 +48,9 @@ fetch_graduation <- function(end_year, tidy = TRUE, use_cache = TRUE) {
   available_years <- get_available_grad_years()
   if (!end_year %in% available_years) {
     stop(paste0(
-      "end_year must be between ", min(available_years), " and ", max(available_years),
-      "\nAvailable years: ", paste(range(available_years), collapse = "-"),
-      "\nData source: ND Insights 4-Year Cohort Graduation Rate"
+      "Graduation data not available for ", end_year,
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
+      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
     ))
   }
 
@@ -80,16 +80,19 @@ fetch_graduation <- function(end_year, tidy = TRUE, use_cache = TRUE) {
 
   # Optionally tidy
   if (tidy) {
-    processed <- tidy_graduation(processed, end_year)
+    result <- tidy_graduation(processed, end_year)
+  } else {
+    # Keep processed data with entity_level preserved
+    result <- processed
   }
 
   # Cache the result
   if (use_cache) {
     cache_file <- get_cache_file_path(end_year, cache_type)
-    saveRDS(processed, cache_file)
+    saveRDS(result, cache_file)
   }
 
-  processed
+  result
 }
 
 
@@ -126,9 +129,9 @@ fetch_graduation_multi <- function(end_years, tidy = TRUE, use_cache = TRUE) {
 
   if (length(invalid_years) > 0) {
     stop(paste0(
-      "Invalid years: ", paste(invalid_years, collapse = ", "),
-      "\nend_year must be between ", min(available_years), " and ", max(available_years),
-      "\nData source: ND Insights 4-Year Cohort Graduation Rate"
+      "Graduation data not available for: ", paste(invalid_years, collapse = ", "),
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
+      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
     ))
   }
 

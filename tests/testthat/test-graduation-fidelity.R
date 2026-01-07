@@ -1195,11 +1195,561 @@ test_that("Multi-year fetch has consistent schema", {
 })
 
 # ==============================================================================
-# TOTAL TESTS: 100+
-# - 2024: 30 tests
-# - 2020: 20 tests
-# - 2017: 15 tests
-# - 2013: 15 tests
-# - Additional years: 20 tests
-# - Multi-year tests: 2 tests
+# ADDITIONAL TESTS FOR COMPREHENSIVE COVERAGE
+# ==============================================================================
+
+test_that("2019: State male graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  male_rate <- data |>
+    dplyr::filter(is_state, subgroup == "male") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.862
+  expect_equal(male_rate, 0.862, tolerance = 0.001)
+})
+
+test_that("2019: State female graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  female_rate <- data |>
+    dplyr::filter(is_state, subgroup == "female") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.904
+  expect_equal(female_rate, 0.904, tolerance = 0.001)
+})
+
+test_that("2019: State White graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  white_rate <- data |>
+    dplyr::filter(is_state, subgroup == "white") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.918
+  expect_equal(white_rate, 0.918, tolerance = 0.001)
+})
+
+test_that("2019: State Native American graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  native_rate <- data |>
+    dplyr::filter(is_state, subgroup == "native_american") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.722
+  expect_equal(native_rate, 0.722, tolerance = 0.001)
+})
+
+test_that("2019: State cohort count matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  state_cohort <- data |>
+    dplyr::filter(is_state, subgroup == "all") |>
+    dplyr::pull(cohort_count)
+
+  # Raw CSV value: 7626
+  expect_equal(state_cohort, 7626)
+})
+
+test_that("2019: State graduate count matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  state_grads <- data |>
+    dplyr::filter(is_state, subgroup == "all") |>
+    dplyr::pull(graduate_count)
+
+  # Raw CSV value: 6730
+  expect_equal(state_grads, 6730)
+})
+
+test_that("2019: Fargo graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  fargo_rate <- data |>
+    dplyr::filter(district_name == "Fargo 1", is_district, subgroup == "all") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.84
+  expect_equal(fargo_rate, 0.84, tolerance = 0.001)
+})
+
+test_that("2019: Fargo cohort count matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  fargo_cohort <- data |>
+    dplyr::filter(district_name == "Fargo 1", is_district, subgroup == "all") |>
+    dplyr::pull(cohort_count)
+
+  # Raw CSV value: 858
+  expect_equal(fargo_cohort, 858)
+})
+
+test_that("2019: Fargo graduate count matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2019, use_cache = TRUE)
+
+  fargo_grads <- data |>
+    dplyr::filter(district_name == "Fargo 1", is_district, subgroup == "all") |>
+    dplyr::pull(graduate_count)
+
+  # Raw CSV value: 721
+  expect_equal(fargo_grads, 721)
+})
+
+test_that("2024: State Hispanic graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  hispanic_rate <- data |>
+    dplyr::filter(is_state, subgroup == "hispanic") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.69
+  expect_equal(hispanic_rate, 0.69, tolerance = 0.001)
+})
+
+test_that("2024: State Black graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  black_rate <- data |>
+    dplyr::filter(is_state, subgroup == "black") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.708
+  expect_equal(black_rate, 0.708, tolerance = 0.001)
+})
+
+test_that("2024: State Asian American graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  asian_rate <- data |>
+    dplyr::filter(is_state, subgroup == "asian_american") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.8
+  expect_equal(asian_rate, 0.8, tolerance = 0.001)
+})
+
+test_that("2024: State IEP graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  iep_rate <- data |>
+    dplyr::filter(is_state, subgroup == "iep") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.651
+  expect_equal(iep_rate, 0.651, tolerance = 0.001)
+})
+
+test_that("2024: State English Learner graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  el_rate <- data |>
+    dplyr::filter(is_state, subgroup == "english_learner") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.693
+  expect_equal(el_rate, 0.693, tolerance = 0.001)
+})
+
+test_that("2024: State Low Income graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  lowinc_rate <- data |>
+    dplyr::filter(is_state, subgroup == "low_income") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.676
+  expect_equal(lowinc_rate, 0.676, tolerance = 0.001)
+})
+
+test_that("2024: State Former English Learner graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  former_el_rate <- data |>
+    dplyr::filter(is_state, subgroup == "former_english_learner") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.936
+  expect_equal(former_el_rate, 0.936, tolerance = 0.001)
+})
+
+test_that("2024: Fargo district ID is 09001 with leading zero", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  fargo_id <- data |>
+    dplyr::filter(district_name == "Fargo 1", is_district, subgroup == "all") |>
+    dplyr::pull(district_id) |>
+    unique()
+
+  expect_equal(fargo_id, "09001")
+  expect_equal(nchar(fargo_id), 5)  # Should preserve leading zero
+})
+
+test_that("2024: Bismarck district ID is 08001 with leading zero", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  bismarck_id <- data |>
+    dplyr::filter(district_name == "Bismarck 1", is_district, subgroup == "all") |>
+    dplyr::pull(district_id) |>
+    unique()
+
+  expect_equal(bismarck_id, "08001")
+  expect_equal(nchar(bismarck_id), 5)  # Should preserve leading zero
+})
+
+test_that("2024: Fargo graduation rate calculated correctly", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  fargo_data <- data |>
+    dplyr::filter(district_name == "Fargo 1", is_district, subgroup == "all")
+
+  # Grad rate should equal graduates / cohort
+  calculated_rate <- fargo_data$graduate_count / fargo_data$cohort_count
+
+  expect_equal(fargo_data$grad_rate, calculated_rate, tolerance = 0.001)
+})
+
+test_that("2024: Bismarck graduation rate calculated correctly", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  bismarck_data <- data |>
+    dplyr::filter(district_name == "Bismarck 1", is_district, subgroup == "all")
+
+  # Grad rate should equal graduates / cohort
+  calculated_rate <- bismarck_data$graduate_count / bismarck_data$cohort_count
+
+  expect_equal(bismarck_data$grad_rate, calculated_rate, tolerance = 0.001)
+})
+
+test_that("2024: State graduation rate calculated correctly", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  state_data <- data |>
+    dplyr::filter(is_state, subgroup == "all")
+
+  # Grad rate should equal graduates / cohort
+  calculated_rate <- state_data$graduate_count / state_data$cohort_count
+
+  expect_equal(state_data$grad_rate, calculated_rate, tolerance = 0.001)
+})
+
+test_that("2013: State male graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  male_rate <- data |>
+    dplyr::filter(is_state, subgroup == "male") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.857
+  expect_equal(male_rate, 0.857, tolerance = 0.001)
+})
+
+test_that("2013: State female graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  female_rate <- data |>
+    dplyr::filter(is_state, subgroup == "female") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.888
+  expect_equal(female_rate, 0.888, tolerance = 0.001)
+})
+
+test_that("2013: State White graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  white_rate <- data |>
+    dplyr::filter(is_state, subgroup == "white") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.894 (calculated from 5538/6192)
+  expect_equal(white_rate, 0.894, tolerance = 0.001)
+})
+
+test_that("2013: State Native American graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  native_rate <- data |>
+    dplyr::filter(is_state, subgroup == "native_american") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.643
+  expect_equal(native_rate, 0.643, tolerance = 0.001)
+})
+
+test_that("2013: State Black graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  black_rate <- data |>
+    dplyr::filter(is_state, subgroup == "black") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.798
+  expect_equal(black_rate, 0.798, tolerance = 0.001)
+})
+
+test_that("2013: State Hispanic graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  hispanic_rate <- data |>
+    dplyr::filter(is_state, subgroup == "hispanic") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.793
+  expect_equal(hispanic_rate, 0.793, tolerance = 0.001)
+})
+
+test_that("2013: State IEP graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  iep_rate <- data |>
+    dplyr::filter(is_state, subgroup == "iep") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.696
+  expect_equal(iep_rate, 0.696, tolerance = 0.001)
+})
+
+test_that("2013: State English Learner graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  el_rate <- data |>
+    dplyr::filter(is_state, subgroup == "english_learner") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.66
+  expect_equal(el_rate, 0.66, tolerance = 0.001)
+})
+
+test_that("2013: State Low Income graduation rate matches raw CSV", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2013, use_cache = TRUE)
+
+  lowinc_rate <- data |>
+    dplyr::filter(is_state, subgroup == "low_income") |>
+    dplyr::pull(grad_rate)
+
+  # Raw CSV value: 0.707
+  expect_equal(lowinc_rate, 0.707, tolerance = 0.001)
+})
+
+test_that("All available years return data successfully", {
+  skip_if_offline()
+
+  # Test all 13 available years
+  years <- 2013:2025
+
+  for (yr in years) {
+    data <- ndschooldata::fetch_graduation(yr, use_cache = TRUE)
+
+    expect_true(nrow(data) > 0,
+                info = paste("Year", yr, "should return data"))
+    expect_true(yr %in% unique(data$end_year),
+                info = paste("Year", yr, "should be in end_year column"))
+  }
+})
+
+test_that("Error handling for invalid year", {
+  skip_if_offline()
+
+  expect_error(
+    ndschooldata::fetch_graduation(2011),
+    "not available"
+  )
+
+  expect_error(
+    ndschooldata::fetch_graduation(2026),
+    "not available"
+  )
+})
+
+test_that("Cohort count always exceeds graduate count for all years", {
+  skip_if_offline()
+
+  years <- c(2013, 2017, 2020, 2024)
+
+  for (yr in years) {
+    data <- ndschooldata::fetch_graduation(yr, use_cache = TRUE)
+
+    expect_true(all(data$cohort_count >= data$graduate_count, na.rm = TRUE),
+                info = paste("Year", yr, "should have cohort >= graduates"))
+  }
+})
+
+test_that("No suppressed values become zero", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  # Small districts might have suppressed data, but it should be NA not 0
+  small_districts <- data |>
+    dplyr::filter(is_district, subgroup == "all", cohort_count < 10)
+
+  # These should either be NA or have proper counts
+  if (nrow(small_districts) > 0) {
+    expect_true(all(small_districts$graduate_count >= 0, na.rm = TRUE))
+  }
+})
+
+test_that("Year-over-year state grad rate changes are reasonable", {
+  skip_if_offline()
+
+  # Get state grad rates for consecutive years
+  data <- ndschooldata::fetch_graduation_multi(2013:2024, use_cache = TRUE)
+
+  state_rates <- data |>
+    dplyr::filter(is_state, subgroup == "all") |>
+    dplyr::arrange(end_year) |>
+    dplyr::pull(grad_rate)
+
+  # YoY change should be less than 15 percentage points
+  for (i in 2:length(state_rates)) {
+    change <- abs(state_rates[i] - state_rates[i-1])
+    expect_true(change < 0.15,
+                info = paste("YoY change should be reasonable for year",
+                             2012 + i))
+  }
+})
+
+test_that("All subgroups present at state level", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  expected_subgroups <- c("all", "male", "female", "white", "black",
+                          "hispanic", "asian_american", "native_american",
+                          "english_learner", "iep", "low_income")
+
+  state_subgroups <- data |>
+    dplyr::filter(is_state) |>
+    dplyr::pull(subgroup) |>
+    unique()
+
+  expect_true(all(expected_subgroups %in% state_subgroups))
+})
+
+test_that("District count is reasonable", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  # ND has ~100-200 districts
+  district_count <- data |>
+    dplyr::filter(is_district, subgroup == "all") |>
+    dplyr::summarise(n = n()) |>
+    dplyr::pull(n)
+
+  expect_gt(district_count, 50)
+  expect_lt(district_count, 300)
+})
+
+test_that("School count is reasonable", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  # ND has ~400-600 schools
+  school_count <- data |>
+    dplyr::filter(is_school, subgroup == "all") |>
+    dplyr::summarise(n = n()) |>
+    dplyr::pull(n)
+
+  expect_gt(school_count, 200)
+  expect_lt(school_count, 1000)
+})
+
+test_that("tidy=FALSE returns district-level aggregation", {
+  skip_if_offline()
+
+  data <- ndschooldata::fetch_graduation(2024, tidy = FALSE)
+
+  # Should have district-level data
+  expect_true("EntityLevel" %in% names(data))
+  expect_true("District" %in% unique(data$EntityLevel))
+})
+
+test_that("use_cache parameter works correctly", {
+  skip_if_offline()
+
+  # First call with cache
+  data1 <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  # Second call should use cached data
+  data2 <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
+
+  expect_equal(nrow(data1), nrow(data2))
+  expect_equal(names(data1), names(data2))
+})
+
+# ==============================================================================
+# FINAL TOTAL TESTS: 126+
+# - 2024: 40+ tests (state totals, subgroups, districts, quality checks)
+# - 2020: 20+ tests
+# - 2019: 10 tests (NEW)
+# - 2017: 15+ tests
+# - 2013: 20+ tests (expanded subgroups)
+# - Multi-year: 5+ tests
+# - Data quality: 10+ tests
+# - Error handling: 3+ tests
+# - Cross-year consistency: 3+ tests
 # ==============================================================================

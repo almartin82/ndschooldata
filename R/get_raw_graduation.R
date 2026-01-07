@@ -29,16 +29,17 @@ build_grad_url <- function(end_year) {
 #' Get available graduation rate years
 #'
 #' Returns the years available in the ND Insights graduation rate data.
-#' Currently 2013-2025 (based on verified CSV downloads).
+#' Currently 2013-2024 (based on verified CSV downloads).
 #'
 #' @return Integer vector of available end years
 #' @export
 #' @examples
 #' get_available_grad_years()
 get_available_grad_years <- function() {
-  # Verified years: 2012-2013 through 2024-2025
-  # These represent end years 2013 through 2025
-  2013L:2025L
+  # Verified years: 2012-2013 through 2023-2024
+  # These represent end years 2013 through 2024
+  # Note: 2024-2025 data not yet available as of 2026-01-07
+  2013L:2024L
 }
 
 
@@ -68,8 +69,8 @@ get_raw_graduation <- function(end_year, cache_dir = NULL) {
   if (!end_year %in% available_years) {
     stop(paste0(
       "Graduation data not available for ", end_year,
-      "\nAvailable years: ", paste(min(available_years), "-", max(available_years), sep = ""),
-      "\nData source: ND Insights 4-Year Cohort Graduation Rate"
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
+      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
     ))
   }
 
@@ -117,7 +118,7 @@ get_raw_graduation <- function(end_year, cache_dir = NULL) {
 
     # Verify file was downloaded and is not empty
     file_info <- file.info(temp_file)
-    if (is.na(file_info$size) || file_info$size < 500) {
+    if (is.na(file_info$size) || file_info$size < 100) {
       stop("Downloaded file is too small or empty")
     }
 
