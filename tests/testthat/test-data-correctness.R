@@ -216,15 +216,21 @@ test_that("cache works correctly", {
   # Clear cache first
   clear_cache()
 
-  # Fetch without cache
-  d1 <- fetch_enr(2024, tidy = TRUE, use_cache = FALSE)
+  # Fetch with cache enabled - should create cache
+  d1 <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
 
   # Should create cache
   expect_true(cache_exists(2024, "tidy"))
 
-  # Fetch with cache
+  # Fetch again with cache - should use cached data
   d2 <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
 
   # Should be identical
   expect_equal(d1, d2, info = "Cached data doesn't match fresh data")
+
+  # Fetch without cache - should bypass cache
+  d3 <- fetch_enr(2024, tidy = TRUE, use_cache = FALSE)
+
+  # Should still be identical (same data source)
+  expect_equal(d1, d3, info = "Fresh data doesn't match cached data")
 })
