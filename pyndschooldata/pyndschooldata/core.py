@@ -165,3 +165,46 @@ def get_available_years() -> dict:
                 "min_year": int(result_dict["min_year"]),
                 "max_year": int(result_dict["max_year"]),
             }
+
+
+def fetch_graduation(end_year: int, tidy: bool = True, use_cache: bool = True) -> pd.DataFrame:
+    """
+    Fetch North Dakota graduation rate data for a single year.
+
+    Parameters
+    ----------
+    end_year : int
+        The ending year of the school year (e.g., 2024 for 2023-24).
+        Valid values are 2013-2024.
+    tidy : bool, default True
+        If True, returns data in long (tidy) format with subgroup column.
+        If False, returns wide format (closer to source).
+    use_cache : bool, default True
+        If True, uses locally cached data when available.
+        Set to False to force re-download from ND Insights.
+
+    Returns
+    -------
+    pd.DataFrame
+        Graduation rate data with columns for entity_level, institution_name,
+        subgroup, grad_rate, cohort_count, graduate_count. Tidy format adds
+        type, district_id, school_id, and aggregation flags.
+
+    Examples
+    --------
+    >>> import pyndschooldata as nd
+    >>> df = nd.fetch_graduation(2024)
+    >>> df.head()
+
+    >>> # Get wide format
+    >>> df_wide = nd.fetch_graduation(2024, tidy=False)
+
+    >>> # Force fresh download
+    >>> df_fresh = nd.fetch_graduation(2024, use_cache=False)
+    """
+    pkg = _get_pkg()
+    with localconverter(robjects.default_converter + pandas2ri.converter):
+        r_df = pkg.fetch_graduation(end_year, tidy=tidy, use_cache=use_cache)
+        if isinstance(r_df, pd.DataFrame):
+            return r_df
+        return pandas2ri.rpy2py(r_df)
