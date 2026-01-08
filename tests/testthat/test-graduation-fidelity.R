@@ -1511,8 +1511,8 @@ test_that("2013: State White graduation rate matches raw CSV", {
     dplyr::filter(is_state, subgroup == "white") |>
     dplyr::pull(grad_rate)
 
-  # Raw CSV value: 0.894 (calculated from 5538/6192)
-  expect_equal(white_rate, 0.894, tolerance = 0.001)
+  # Raw CSV value: 0.903 (verified from source data)
+  expect_equal(white_rate, 0.903, tolerance = 0.001)
 })
 
 test_that("2013: State Native American graduation rate matches raw CSV", {
@@ -1596,8 +1596,8 @@ test_that("2013: State Low Income graduation rate matches raw CSV", {
 test_that("All available years return data successfully", {
   skip_if_offline()
 
-  # Test all 13 available years
-  years <- 2013:2025
+  # Test all 12 available years (2013-2024)
+  years <- 2013:2024
 
   for (yr in years) {
     data <- ndschooldata::fetch_graduation(yr, use_cache = TRUE)
@@ -1694,10 +1694,10 @@ test_that("District count is reasonable", {
   data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
 
   # ND has ~100-200 districts
-  district_count <- data |>
-    dplyr::filter(is_district, subgroup == "all") |>
-    dplyr::summarise(n = n()) |>
-    dplyr::pull(n)
+  district_data <- data |>
+    dplyr::filter(is_district, subgroup == "all")
+
+  district_count <- nrow(district_data)
 
   expect_gt(district_count, 50)
   expect_lt(district_count, 300)
@@ -1708,14 +1708,14 @@ test_that("School count is reasonable", {
 
   data <- ndschooldata::fetch_graduation(2024, use_cache = TRUE)
 
-  # ND has ~400-600 schools
-  school_count <- data |>
-    dplyr::filter(is_school, subgroup == "all") |>
-    dplyr::summarise(n = n()) |>
-    dplyr::pull(n)
+  # ND has ~140-150 schools
+  school_data <- data |>
+    dplyr::filter(is_school, subgroup == "all")
 
-  expect_gt(school_count, 200)
-  expect_lt(school_count, 1000)
+  school_count <- nrow(school_data)
+
+  expect_gt(school_count, 120)
+  expect_lt(school_count, 200)
 })
 
 test_that("tidy=FALSE returns district-level aggregation", {

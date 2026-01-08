@@ -38,7 +38,6 @@ build_grad_url <- function(end_year) {
 get_available_grad_years <- function() {
   # Verified years: 2012-2013 through 2023-2024
   # These represent end years 2013 through 2024
-  # Note: 2024-2025 data not yet available as of 2026-01-07
   2013L:2024L
 }
 
@@ -69,8 +68,7 @@ get_raw_graduation <- function(end_year, cache_dir = NULL) {
   if (!end_year %in% available_years) {
     stop(paste0(
       "Graduation data not available for ", end_year,
-      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
-      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = "")
     ))
   }
 
