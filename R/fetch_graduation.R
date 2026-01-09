@@ -49,8 +49,7 @@ fetch_graduation <- function(end_year, tidy = TRUE, use_cache = TRUE) {
   if (!end_year %in% available_years) {
     stop(paste0(
       "Graduation data not available for ", end_year,
-      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
-      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = "")
     ))
   }
 
@@ -130,8 +129,7 @@ fetch_graduation_multi <- function(end_years, tidy = TRUE, use_cache = TRUE) {
   if (length(invalid_years) > 0) {
     stop(paste0(
       "Graduation data not available for: ", paste(invalid_years, collapse = ", "),
-      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = ""),
-      ". Data source: ND Insights 4-Year Cohort Graduation Rate"
+      ". Available years: ", paste(min(available_years), "-", max(available_years), sep = "")
     ))
   }
 

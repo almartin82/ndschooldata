@@ -102,10 +102,11 @@ get_raw_school_directory <- function(end_year) {
       stop(paste("No data available for year", end_year))
     }
 
-    # Read the CSV, skipping the HTML meta tag on line 1
+    # Read the CSV, stripping the HTML meta tag from line 1 if present
     lines <- readLines(temp_file, warn = FALSE)
     if (length(lines) > 0 && grepl("^<meta", lines[1])) {
-      lines <- lines[-1]
+      # Remove only the meta tag, keep the CSV header that follows
+      lines[1] <- sub("^<meta[^>]*>", "", lines[1])
     }
 
     # Parse CSV
@@ -172,10 +173,11 @@ get_raw_district_directory <- function(end_year) {
       stop(paste("No data available for year", end_year))
     }
 
-    # Read the CSV, skipping the HTML meta tag on line 1
+    # Read the CSV, stripping the HTML meta tag from line 1 if present
     lines <- readLines(temp_file, warn = FALSE)
     if (length(lines) > 0 && grepl("^<meta", lines[1])) {
-      lines <- lines[-1]
+      # Remove only the meta tag, keep the CSV header that follows
+      lines[1] <- sub("^<meta[^>]*>", "", lines[1])
     }
 
     # Parse CSV

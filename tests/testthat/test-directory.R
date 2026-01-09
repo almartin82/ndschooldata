@@ -301,7 +301,7 @@ test_that("Directory data available for multiple years", {
 
     for (yr in years_to_test) {
       data <- ndschooldata::fetch_directory(yr, use_cache = FALSE)
-      expect_gt(nrow(data), 0, info = paste("Year", yr, "should have data"))
+      expect_gt(nrow(data), 0)
       expect_equal(unique(data$end_year), yr)
     }
   }, error = function(e) {
