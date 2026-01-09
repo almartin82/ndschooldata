@@ -29,21 +29,21 @@ enr %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   select(end_year, n_students)
 #>   end_year n_students
-#> 1     2008      97234
-#> 2     2012     103567
-#> 3     2015     112456
-#> 4     2020     116789
-#> 5     2024     117234
+#> 1     2008      94052
+#> 2     2012      95778
+#> 3     2015     104278
+#> 4     2020     112858
+#> 5     2024     115767
 ```
 
-From **97,000 to 117,000 students** in 16 years. The boom changed
+From **94,000 to 116,000 students** in 16 years. The boom changed
 everything.
 
 ------------------------------------------------------------------------
 
-### 2. Fargo is now twice as big as any other district
+### 2. Bismarck is now the state’s largest district
 
-The state’s largest city keeps pulling ahead.
+The capital city has overtaken Fargo as the state’s largest district.
 
 ``` r
 enr_2024 <- fetch_enr(2024)
@@ -53,18 +53,19 @@ enr_2024 %>%
   arrange(desc(n_students)) %>%
   head(8) %>%
   select(district_name, n_students)
-#>             district_name n_students
-#> 1     Fargo Public Schools      11234
-#> 2   Bismarck Public Schools       6567
-#> 3   West Fargo Public Schools      6123
-#> 4  Grand Forks Public Schools      5892
-#> 5      Minot Public Schools       5456
-#> 6 Williston Public Schools        3234
-#> 7     Mandan Public Schools       2890
-#> 8    Dickinson Public Schools      2567
+#>      district_name n_students
+#> 1        Bismarck 1      13732
+#> 2      West Fargo 6      12676
+#> 3           Fargo 1      11319
+#> 4           Minot 1       7510
+#> 5     Grand Forks 1       7428
+#> 6 Williston Basin 7       5198
+#> 7          Mandan 1       4368
+#> 8       Dickinson 1       3977
 ```
 
-**Fargo: 11,000 students**. Almost 10% of the entire state.
+**Bismarck: 13,700 students**. The capital city continues to lead the
+state.
 
 ------------------------------------------------------------------------
 
@@ -81,18 +82,18 @@ enr_multi %>%
   filter(end_year %in% c(2010, 2015, 2020, 2024)) %>%
   select(end_year, district_name, n_students) %>%
   mutate(pct_change = round((n_students / first(n_students) - 1) * 100, 1))
-#>   end_year           district_name n_students pct_change
-#> 1     2010 West Fargo Public Schools       3456        0.0
-#> 2     2015 West Fargo Public Schools       4567       32.1
-#> 3     2020 West Fargo Public Schools       5678       64.3
-#> 4     2024 West Fargo Public Schools       6123       77.2
+#>   end_year district_name n_students pct_change
+#> 1     2010  West Fargo 6       6848        0.0
+#> 2     2015  West Fargo 6       8970       31.0
+#> 3     2020  West Fargo 6      11272       64.6
+#> 4     2024  West Fargo 6      12676       85.1
 ```
 
-**+77% growth** since 2010. West Fargo built 8 new schools in a decade.
+**+85% growth** since 2010. West Fargo built 8 new schools in a decade.
 
 ------------------------------------------------------------------------
 
-### 4. Williston tripled during the oil boom
+### 4. Williston doubled during the oil boom
 
 The Bakken’s epicenter transformed overnight.
 
@@ -104,14 +105,13 @@ enr_multi %>%
   select(end_year, n_students) %>%
   mutate(change = n_students - lag(n_students))
 #>   end_year n_students change
-#> 1     2008       1234     NA
-#> 2     2012       2456   1222
-#> 3     2015       3567   1111
-#> 4     2020       3234   -333
-#> 5     2024       3234      0
+#> 1     2012       2659     NA
+#> 2     2015       3371    712
+#> 3     2020       4403   1032
+#> 4     2024       5198    795
 ```
 
-From **1,200 to 3,500 students** in 7 years. The bust cooled growth but
+From **2,600 to 5,200 students** in 12 years. The bust cooled growth but
 didn’t reverse it.
 
 ------------------------------------------------------------------------
@@ -129,14 +129,14 @@ enr_multi %>%
   tidyr::pivot_wider(names_from = end_year, values_from = n_students) %>%
   mutate(pct_change = round((`2024` - `2019`) / `2019` * 100, 1))
 #>   grade_level `2019` `2024` pct_change
-#> 1           K   8234   7654       -7.0
-#> 2          01   8456   7890       -6.7
-#> 3          05   8678   8567       -1.3
-#> 4          09   8901   8789       -1.3
-#> 5          12   8345   8234       -1.3
+#> 1           K   9324   8636       -7.4
+#> 2          01   9178   9291        1.2
+#> 3          05   8850   9002        1.7
+#> 4          09   8397   9164        9.1
+#> 5          12   7548   8028        6.4
 ```
 
-**-580 kindergartners** since 2019. Birth rates are catching up.
+**-690 kindergartners** since 2019. Birth rates are catching up.
 
 ------------------------------------------------------------------------
 
@@ -152,20 +152,20 @@ enr_multi %>%
   mutate(change = n_students - lag(n_students),
          pct = round(change / lag(n_students) * 100, 1))
 #>   end_year n_students change   pct
-#> 1     2019     115678     NA    NA
-#> 2     2020     116234    556   0.5
-#> 3     2021     115012  -1222  -1.1
-#> 4     2022     115789    777   0.7
+#> 1     2019     110842     NA    NA
+#> 2     2020     112858   2016   1.8
+#> 3     2021     112045   -813  -0.7
+#> 4     2022     113858   1813   1.6
 ```
 
-Only **-1.1%** in 2021. Most states lost 3-5%. Rural schools stayed
+Only **-0.7%** in 2021. Most states lost 3-5%. Rural schools stayed
 open.
 
 ------------------------------------------------------------------------
 
 ### 7. Rural districts are consolidating
 
-The number of districts dropped from 173 to 168 in a decade.
+The number of districts dropped from 182 to 167 in 14 years.
 
 ``` r
 enr_multi %>%
@@ -174,19 +174,20 @@ enr_multi %>%
   summarize(n_districts = n_distinct(district_id)) %>%
   filter(end_year %in% c(2010, 2015, 2020, 2024))
 #>   end_year n_districts
-#> 1     2010         173
-#> 2     2015         171
-#> 3     2020         169
-#> 4     2024         168
+#> 1     2010         182
+#> 2     2015         176
+#> 3     2020         173
+#> 4     2024         167
 ```
 
-**5 districts** merged or closed. Small schools are getting smaller.
+**15 districts** merged or closed since 2010. Small schools are getting
+smaller.
 
 ------------------------------------------------------------------------
 
-### 8. Elementary grades are shrinking faster than high school
+### 8. Elementary and high school grades are growing
 
-The enrollment wave from the oil boom is aging out.
+The enrollment wave from the oil boom continues across all levels.
 
 ``` r
 enr_multi %>%
@@ -203,17 +204,16 @@ enr_multi %>%
   tidyr::pivot_wider(names_from = end_year, values_from = total) %>%
   mutate(pct_change = round((`2024` - `2015`) / `2015` * 100, 1))
 #>        level `2015` `2024` pct_change
-#> 1 Elementary  52345  48234       -7.9
-#> 2     Middle  26789  27123        1.2
-#> 3 High School 33322  35678        7.1
+#> 1 Elementary  50935  54642        7.3
+#> 2     Middle  23108  26569       15.0
+#> 3 High School  30235  34556       14.3
 ```
 
-Elementary: **-8%**. High school: **+7%**. The boom kids are seniors
-now.
+All levels growing: **Elementary +7%, Middle +15%, High School +14%**.
 
 ------------------------------------------------------------------------
 
-### 9. North Dakota has 47 districts with under 100 students
+### 9. North Dakota has 35 districts with under 100 students
 
 Tiny rural schools define the landscape.
 
@@ -229,39 +229,37 @@ enr_2024 %>%
   )) %>%
   count(size_category)
 #>   size_category  n
-#> 1     Under 100 47
-#> 2       100-499 78
-#> 3       500-999 23
-#> 4   1,000-4,999 14
-#> 5        5,000+  6
+#> 1   1,000-4,999  8
+#> 2       100-499 98
+#> 3        5,000+  6
+#> 4       500-999 20
+#> 5     Under 100 35
 ```
 
-**47 districts** with fewer than 100 students. That’s 28% of all
+**35 districts** with fewer than 100 students. That’s 21% of all
 districts.
 
 ------------------------------------------------------------------------
 
-### 10. The reservation schools need support
+### 10. Native American graduation rates lag behind
 
-Native American students are 8% of enrollment but concentrated in
-high-poverty districts.
+Native American students are 11% of the cohort but face significant
+achievement gaps.
 
 ``` r
-# Native American enrollment
-# Note: Main NDDPI file doesn't include demographics
-enr_2024 %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  filter(grepl("Standing Rock|Fort Totten|Turtle Mountain|Fort Yates", district_name)) %>%
-  select(district_name, n_students)
-#>            district_name n_students
-#> 1 Turtle Mountain Schools       2345
-#> 2    Standing Rock School        456
-#> 3       Fort Totten School        289
-#> 4      Fort Yates School         234
+grad_2024 <- fetch_graduation(2024)
+
+# Native American vs overall graduation rate
+grad_2024 %>%
+  filter(is_state, subgroup %in% c("all", "native_american")) %>%
+  select(subgroup, grad_rate, cohort_count, graduate_count)
+#>        subgroup grad_rate cohort_count graduate_count
+#> 1           all     0.824         8681           7154
+#> 2 native_american     0.634          939            595
 ```
 
-Tribal schools serve over **3,000 students**. They face unique
-challenges and deserve attention.
+Native American students graduate at **63%** compared to **82%**
+overall. A 19-point gap that demands attention.
 
 ------------------------------------------------------------------------
 

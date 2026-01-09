@@ -80,18 +80,18 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   end_year n_students</span></span>
-<span><span class="co">#&gt; 1     2008      97234</span></span>
-<span><span class="co">#&gt; 2     2012     103567</span></span>
-<span><span class="co">#&gt; 3     2015     112456</span></span>
-<span><span class="co">#&gt; 4     2020     116789</span></span>
-<span><span class="co">#&gt; 5     2024     117234</span></span></code></pre></div>
-<p>From <strong>97,000 to 117,000 students</strong> in 16 years. The boom changed everything.</p>
+<span><span class="co">#&gt; 1     2008      94052</span></span>
+<span><span class="co">#&gt; 2     2012      95778</span></span>
+<span><span class="co">#&gt; 3     2015     104278</span></span>
+<span><span class="co">#&gt; 4     2020     112858</span></span>
+<span><span class="co">#&gt; 5     2024     115767</span></span></code></pre></div>
+<p>From <strong>94,000 to 116,000 students</strong> in 16 years. The boom changed everything.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_2-fargo-is-now-twice-as-big-as-any-other-district">2. Fargo is now twice as big as any other district<a class="anchor" aria-label="anchor" href="#id_2-fargo-is-now-twice-as-big-as-any-other-district"></a>
+<h3 id="id_2-bismarck-is-now-the-states-largest-district">2. Bismarck is now the state’s largest district<a class="anchor" aria-label="anchor" href="#id_2-bismarck-is-now-the-states-largest-district"></a>
 </h3>
-<p>The state’s largest city keeps pulling ahead.</p>
+<p>The capital city has overtaken Fargo as the state’s largest district.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enr_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
@@ -100,16 +100,16 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             district_name n_students</span></span>
-<span><span class="co">#&gt; 1     Fargo Public Schools      11234</span></span>
-<span><span class="co">#&gt; 2   Bismarck Public Schools       6567</span></span>
-<span><span class="co">#&gt; 3   West Fargo Public Schools      6123</span></span>
-<span><span class="co">#&gt; 4  Grand Forks Public Schools      5892</span></span>
-<span><span class="co">#&gt; 5      Minot Public Schools       5456</span></span>
-<span><span class="co">#&gt; 6 Williston Public Schools        3234</span></span>
-<span><span class="co">#&gt; 7     Mandan Public Schools       2890</span></span>
-<span><span class="co">#&gt; 8    Dickinson Public Schools      2567</span></span></code></pre></div>
-<p><strong>Fargo: 11,000 students</strong>. Almost 10% of the entire state.</p>
+<span><span class="co">#&gt;      district_name n_students</span></span>
+<span><span class="co">#&gt; 1        Bismarck 1      13732</span></span>
+<span><span class="co">#&gt; 2      West Fargo 6      12676</span></span>
+<span><span class="co">#&gt; 3           Fargo 1      11319</span></span>
+<span><span class="co">#&gt; 4           Minot 1       7510</span></span>
+<span><span class="co">#&gt; 5     Grand Forks 1       7428</span></span>
+<span><span class="co">#&gt; 6 Williston Basin 7       5198</span></span>
+<span><span class="co">#&gt; 7          Mandan 1       4368</span></span>
+<span><span class="co">#&gt; 8       Dickinson 1       3977</span></span></code></pre></div>
+<p><strong>Bismarck: 13,700 students</strong>. The capital city continues to lead the state.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -125,16 +125,16 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2015</span>, <span class="fl">2020</span>, <span class="fl">2024</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   end_year           district_name n_students pct_change</span></span>
-<span><span class="co">#&gt; 1     2010 West Fargo Public Schools       3456        0.0</span></span>
-<span><span class="co">#&gt; 2     2015 West Fargo Public Schools       4567       32.1</span></span>
-<span><span class="co">#&gt; 3     2020 West Fargo Public Schools       5678       64.3</span></span>
-<span><span class="co">#&gt; 4     2024 West Fargo Public Schools       6123       77.2</span></span></code></pre></div>
-<p><strong>+77% growth</strong> since 2010. West Fargo built 8 new schools in a decade.</p>
+<span><span class="co">#&gt;   end_year district_name n_students pct_change</span></span>
+<span><span class="co">#&gt; 1     2010  West Fargo 6       6848        0.0</span></span>
+<span><span class="co">#&gt; 2     2015  West Fargo 6       8970       31.0</span></span>
+<span><span class="co">#&gt; 3     2020  West Fargo 6      11272       64.6</span></span>
+<span><span class="co">#&gt; 4     2024  West Fargo 6      12676       85.1</span></span></code></pre></div>
+<p><strong>+85% growth</strong> since 2010. West Fargo built 8 new schools in a decade.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_4-williston-tripled-during-the-oil-boom">4. Williston tripled during the oil boom<a class="anchor" aria-label="anchor" href="#id_4-williston-tripled-during-the-oil-boom"></a>
+<h3 id="id_4-williston-doubled-during-the-oil-boom">4. Williston doubled during the oil boom<a class="anchor" aria-label="anchor" href="#id_4-williston-doubled-during-the-oil-boom"></a>
 </h3>
 <p>The Bakken’s epicenter transformed overnight.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -145,12 +145,11 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   end_year n_students change</span></span>
-<span><span class="co">#&gt; 1     2008       1234     NA</span></span>
-<span><span class="co">#&gt; 2     2012       2456   1222</span></span>
-<span><span class="co">#&gt; 3     2015       3567   1111</span></span>
-<span><span class="co">#&gt; 4     2020       3234   -333</span></span>
-<span><span class="co">#&gt; 5     2024       3234      0</span></span></code></pre></div>
-<p>From <strong>1,200 to 3,500 students</strong> in 7 years. The bust cooled growth but didn’t reverse it.</p>
+<span><span class="co">#&gt; 1     2012       2659     NA</span></span>
+<span><span class="co">#&gt; 2     2015       3371    712</span></span>
+<span><span class="co">#&gt; 3     2020       4403   1032</span></span>
+<span><span class="co">#&gt; 4     2024       5198    795</span></span></code></pre></div>
+<p>From <strong>2,600 to 5,200 students</strong> in 12 years. The bust cooled growth but didn’t reverse it.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -166,12 +165,12 @@
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">end_year</span>, values_from <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">`2024`</span> <span class="op">-</span> <span class="va">`2019`</span><span class="op">)</span> <span class="op">/</span> <span class="va">`2019`</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   grade_level `2019` `2024` pct_change</span></span>
-<span><span class="co">#&gt; 1           K   8234   7654       -7.0</span></span>
-<span><span class="co">#&gt; 2          01   8456   7890       -6.7</span></span>
-<span><span class="co">#&gt; 3          05   8678   8567       -1.3</span></span>
-<span><span class="co">#&gt; 4          09   8901   8789       -1.3</span></span>
-<span><span class="co">#&gt; 5          12   8345   8234       -1.3</span></span></code></pre></div>
-<p><strong>-580 kindergartners</strong> since 2019. Birth rates are catching up.</p>
+<span><span class="co">#&gt; 1           K   9324   8636       -7.4</span></span>
+<span><span class="co">#&gt; 2          01   9178   9291        1.2</span></span>
+<span><span class="co">#&gt; 3          05   8850   9002        1.7</span></span>
+<span><span class="co">#&gt; 4          09   8397   9164        9.1</span></span>
+<span><span class="co">#&gt; 5          12   7548   8028        6.4</span></span></code></pre></div>
+<p><strong>-690 kindergartners</strong> since 2019. Birth rates are catching up.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -186,17 +185,17 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
 <span>         pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">change</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   end_year n_students change   pct</span></span>
-<span><span class="co">#&gt; 1     2019     115678     NA    NA</span></span>
-<span><span class="co">#&gt; 2     2020     116234    556   0.5</span></span>
-<span><span class="co">#&gt; 3     2021     115012  -1222  -1.1</span></span>
-<span><span class="co">#&gt; 4     2022     115789    777   0.7</span></span></code></pre></div>
-<p>Only <strong>-1.1%</strong> in 2021. Most states lost 3-5%. Rural schools stayed open.</p>
+<span><span class="co">#&gt; 1     2019     110842     NA    NA</span></span>
+<span><span class="co">#&gt; 2     2020     112858   2016   1.8</span></span>
+<span><span class="co">#&gt; 3     2021     112045   -813  -0.7</span></span>
+<span><span class="co">#&gt; 4     2022     113858   1813   1.6</span></span></code></pre></div>
+<p>Only <strong>-0.7%</strong> in 2021. Most states lost 3-5%. Rural schools stayed open.</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="id_7-rural-districts-are-consolidating">7. Rural districts are consolidating<a class="anchor" aria-label="anchor" href="#id_7-rural-districts-are-consolidating"></a>
 </h3>
-<p>The number of districts dropped from 173 to 168 in a decade.</p>
+<p>The number of districts dropped from 182 to 167 in 14 years.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enr_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -204,17 +203,17 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_districts <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/n_distinct.html" class="external-link">n_distinct</a></span><span class="op">(</span><span class="va">district_id</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2015</span>, <span class="fl">2020</span>, <span class="fl">2024</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   end_year n_districts</span></span>
-<span><span class="co">#&gt; 1     2010         173</span></span>
-<span><span class="co">#&gt; 2     2015         171</span></span>
-<span><span class="co">#&gt; 3     2020         169</span></span>
-<span><span class="co">#&gt; 4     2024         168</span></span></code></pre></div>
-<p><strong>5 districts</strong> merged or closed. Small schools are getting smaller.</p>
+<span><span class="co">#&gt; 1     2010         182</span></span>
+<span><span class="co">#&gt; 2     2015         176</span></span>
+<span><span class="co">#&gt; 3     2020         173</span></span>
+<span><span class="co">#&gt; 4     2024         167</span></span></code></pre></div>
+<p><strong>15 districts</strong> merged or closed since 2010. Small schools are getting smaller.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_8-elementary-grades-are-shrinking-faster-than-high-school">8. Elementary grades are shrinking faster than high school<a class="anchor" aria-label="anchor" href="#id_8-elementary-grades-are-shrinking-faster-than-high-school"></a>
+<h3 id="id_8-elementary-and-high-school-grades-are-growing">8. Elementary and high school grades are growing<a class="anchor" aria-label="anchor" href="#id_8-elementary-and-high-school-grades-are-growing"></a>
 </h3>
-<p>The enrollment wave from the oil boom is aging out.</p>
+<p>The enrollment wave from the oil boom continues across all levels.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enr_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -230,14 +229,14 @@
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">end_year</span>, values_from <span class="op">=</span> <span class="va">total</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">`2024`</span> <span class="op">-</span> <span class="va">`2015`</span><span class="op">)</span> <span class="op">/</span> <span class="va">`2015`</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        level `2015` `2024` pct_change</span></span>
-<span><span class="co">#&gt; 1 Elementary  52345  48234       -7.9</span></span>
-<span><span class="co">#&gt; 2     Middle  26789  27123        1.2</span></span>
-<span><span class="co">#&gt; 3 High School 33322  35678        7.1</span></span></code></pre></div>
-<p>Elementary: <strong>-8%</strong>. High school: <strong>+7%</strong>. The boom kids are seniors now.</p>
+<span><span class="co">#&gt; 1 Elementary  50935  54642        7.3</span></span>
+<span><span class="co">#&gt; 2     Middle  23108  26569       15.0</span></span>
+<span><span class="co">#&gt; 3 High School  30235  34556       14.3</span></span></code></pre></div>
+<p>All levels growing: <strong>Elementary +7%, Middle +15%, High School +14%</strong>.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_9-north-dakota-has-47-districts-with-under-100-students">9. North Dakota has 47 districts with under 100 students<a class="anchor" aria-label="anchor" href="#id_9-north-dakota-has-47-districts-with-under-100-students"></a>
+<h3 id="id_9-north-dakota-has-35-districts-with-under-100-students">9. North Dakota has 35 districts with under 100 students<a class="anchor" aria-label="anchor" href="#id_9-north-dakota-has-35-districts-with-under-100-students"></a>
 </h3>
 <p>Tiny rural schools define the landscape.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -252,31 +251,29 @@
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">size_category</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   size_category  n</span></span>
-<span><span class="co">#&gt; 1     Under 100 47</span></span>
-<span><span class="co">#&gt; 2       100-499 78</span></span>
-<span><span class="co">#&gt; 3       500-999 23</span></span>
-<span><span class="co">#&gt; 4   1,000-4,999 14</span></span>
-<span><span class="co">#&gt; 5        5,000+  6</span></span></code></pre></div>
-<p><strong>47 districts</strong> with fewer than 100 students. That’s 28% of all districts.</p>
+<span><span class="co">#&gt; 1   1,000-4,999  8</span></span>
+<span><span class="co">#&gt; 2       100-499 98</span></span>
+<span><span class="co">#&gt; 3        5,000+  6</span></span>
+<span><span class="co">#&gt; 4       500-999 20</span></span>
+<span><span class="co">#&gt; 5     Under 100 35</span></span></code></pre></div>
+<p><strong>35 districts</strong> with fewer than 100 students. That’s 21% of all districts.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_10-the-reservation-schools-need-support">10. The reservation schools need support<a class="anchor" aria-label="anchor" href="#id_10-the-reservation-schools-need-support"></a>
+<h3 id="id_10-native-american-graduation-rates-lag-behind">10. Native American graduation rates lag behind<a class="anchor" aria-label="anchor" href="#id_10-native-american-graduation-rates-lag-behind"></a>
 </h3>
-<p>Native American students are 8% of enrollment but concentrated in high-poverty districts.</p>
+<p>Native American students are 11% of the cohort but face significant achievement gaps.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Native American enrollment</span></span>
-<span><span class="co"># Note: Main NDDPI file doesn't include demographics</span></span>
-<span><span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Standing Rock|Fort Totten|Turtle Mountain|Fort Yates"</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            district_name n_students</span></span>
-<span><span class="co">#&gt; 1 Turtle Mountain Schools       2345</span></span>
-<span><span class="co">#&gt; 2    Standing Rock School        456</span></span>
-<span><span class="co">#&gt; 3       Fort Totten School        289</span></span>
-<span><span class="co">#&gt; 4      Fort Yates School         234</span></span></code></pre></div>
-<p>Tribal schools serve over <strong>3,000 students</strong>. They face unique challenges and deserve attention.</p>
+<code class="sourceCode R"><span><span class="va">grad_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_graduation.html">fetch_graduation</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Native American vs overall graduation rate</span></span>
+<span><span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"native_american"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        subgroup grad_rate cohort_count graduate_count</span></span>
+<span><span class="co">#&gt; 1           all     0.824         8681           7154</span></span>
+<span><span class="co">#&gt; 2 native_american     0.634          939            595</span></span></code></pre></div>
+<p>Native American students graduate at <strong>63%</strong> compared to <strong>82%</strong> overall. A 19-point gap that demands attention.</p>
 <hr>
 </div>
 </div>
