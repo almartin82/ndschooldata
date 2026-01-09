@@ -33,7 +33,7 @@ North Dakota's school enrollment tells a story of oil booms, suburban growth, an
 Enrollment surged 15% from 2008 to 2015 as the Bakken brought families to the state.
 
 ```{r statewide-data}
-enr <- fetch_enr_multi(2008:2024)
+enr <- fetch_enr_multi(2008:2024, use_cache = TRUE)
 
 statewide <- enr %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
@@ -64,7 +64,7 @@ ggplot(statewide, aes(x = end_year, y = n_students)) +
 The state's largest city is now twice as big as any other district.
 
 ```{r top-districts-data}
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
 top_districts <- enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
@@ -414,7 +414,7 @@ These insights just scratch the surface. Use `ndschooldata` to explore:
 library(ndschooldata)
 
 # Fetch all available years
-enr_all <- fetch_enr_multi(get_available_years())
+enr_all <- fetch_enr_multi(get_available_years(, use_cache = TRUE))
 
 # Explore your district
 enr_all %>%
