@@ -421,3 +421,9 @@ enr_all <- fetch_enr_multi(get_available_years(, use_cache = TRUE))
 enr_all %>%
   filter(grepl("Your District", district_name))
 ```
+
+## Session Info
+
+```{r session-info}
+sessionInfo()
+```
