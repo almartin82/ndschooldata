@@ -1,8 +1,8 @@
 ---
-title: "15 Insights from North Dakota School Enrollment Data"
+title: "16 Insights from North Dakota School Enrollment Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{15 Insights from North Dakota School Enrollment Data}
+  %\VignetteIndexEntry{16 Insights from North Dakota School Enrollment Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -402,6 +402,188 @@ ggplot(small_district_trend, aes(x = end_year, y = count, fill = category)) +
   theme(legend.position = "bottom")
 ```
 
+## 12. Native American Graduation Rates Lag State Average
+
+Native American students face a 19-point graduation gap compared to the state average.
+
+```{r native-grad-data}
+grad_2024 <- fetch_graduation(2024, use_cache = TRUE)
+
+# Compare subgroups at state level
+grad_subgroups <- grad_2024 %>%
+  filter(is_state, subgroup %in% c("all", "native_american", "white", "low_income")) %>%
+  select(subgroup, grad_rate, cohort_count, graduate_count) %>%
+  arrange(desc(grad_rate))
+
+grad_subgroups
+```
+
+```{r native-grad-chart}
+ggplot(grad_subgroups, aes(x = reorder(subgroup, grad_rate), y = grad_rate)) +
+  geom_col(fill = "#E63946") +
+  geom_text(aes(label = paste0(round(grad_rate * 100, 1), "%")),
+            hjust = -0.1, size = 4, fontface = "bold") +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
+  labs(
+    title = "2024 Graduation Rates by Subgroup (State Level)",
+    subtitle = "Native American students graduate at 63% vs. 82% overall",
+    x = NULL,
+    y = "4-Year Graduation Rate",
+    caption = "Source: ND Insights (insights.nd.gov)"
+  )
+```
+
+## 13. Graduation Rates Dropped 6 Points Since 2019
+
+The statewide graduation rate has declined from 88% to 82% over five years.
+
+```{r grad-trend-data}
+grad_multi <- fetch_graduation_multi(2013:2024, use_cache = TRUE)
+
+grad_trend <- grad_multi %>%
+  filter(is_state, subgroup == "all") %>%
+  select(end_year, grad_rate, cohort_count, graduate_count)
+
+grad_trend
+```
+
+```{r grad-trend-chart}
+ggplot(grad_trend, aes(x = end_year, y = grad_rate)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  geom_point(color = "#2E86AB", size = 3) +
+  geom_vline(xintercept = 2019, linetype = "dashed", color = "gray50", alpha = 0.7) +
+  annotate("text", x = 2019.3, y = 0.89, label = "Pre-COVID peak", hjust = 0, color = "gray40") +
+  scale_y_continuous(labels = scales::percent, limits = c(0.75, 0.95)) +
+  labs(
+    title = "North Dakota 4-Year Graduation Rate: 2013-2024",
+    subtitle = "Dropped from 88% in 2019 to 82% in 2024",
+    x = "Cohort Year",
+    y = "4-Year Graduation Rate",
+    caption = "Source: ND Insights (insights.nd.gov)"
+  )
+```
+
+## 14. Fargo Has Higher Graduation Rates Than Bismarck
+
+Despite similar sizes, the two largest districts show different outcomes.
+
+```{r top-district-grad-data}
+top_grad_districts <- grad_2024 %>%
+  filter(is_district, subgroup == "all", cohort_count >= 100) %>%
+  arrange(desc(grad_rate)) %>%
+  head(10) %>%
+  select(district_name, grad_rate, cohort_count, graduate_count) %>%
+  mutate(district_name = gsub(" Public School.*| School District.*", "", district_name))
+
+top_grad_districts
+```
+
+```{r top-district-grad-chart}
+ggplot(top_grad_districts, aes(x = reorder(district_name, grad_rate), y = grad_rate)) +
+  geom_col(fill = "#048A81") +
+  geom_text(aes(label = paste0(round(grad_rate * 100, 1), "%")),
+            hjust = -0.1, size = 3.5) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
+  labs(
+    title = "Top 10 Districts by Graduation Rate (2024)",
+    subtitle = "Minimum 100 students in cohort",
+    x = NULL,
+    y = "4-Year Graduation Rate",
+    caption = "Source: ND Insights (insights.nd.gov)"
+  )
+```
+
+## 15. Cohort Size Has Grown 14% Since 2013
+
+More students are reaching senior year as the oil boom generation ages through.
+
+```{r cohort-size-data}
+cohort_trend <- grad_multi %>%
+  filter(is_state, subgroup == "all") %>%
+  select(end_year, cohort_count, graduate_count) %>%
+  mutate(
+    non_grad = cohort_count - graduate_count,
+    pct_change = round((cohort_count / first(cohort_count) - 1) * 100, 1)
+  )
+
+cohort_trend
+```
+
+```{r cohort-size-chart}
+cohort_long <- cohort_trend %>%
+  select(end_year, graduate_count, non_grad) %>%
+  pivot_longer(cols = c(graduate_count, non_grad),
+               names_to = "status", values_to = "count") %>%
+  mutate(status = ifelse(status == "graduate_count", "Graduated", "Did Not Graduate"))
+
+ggplot(cohort_long, aes(x = end_year, y = count, fill = status)) +
+  geom_area(alpha = 0.8) +
+  scale_fill_manual(values = c("Graduated" = "#2A9D8F", "Did Not Graduate" = "#E76F51")) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = "4-Year Cohort Outcomes Over Time",
+    subtitle = "Cohort grew 14% but non-graduates increased faster",
+    x = "Cohort Year",
+    y = "Number of Students",
+    fill = "Outcome",
+    caption = "Source: ND Insights (insights.nd.gov)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 16. Rural Schools Have Higher Graduation Rates
+
+Small districts outperform large urban districts on graduation.
+
+```{r rural-vs-urban-data}
+# Join enrollment to graduation data
+district_size <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  select(district_id, district_name, enrollment = n_students)
+
+grad_with_size <- grad_2024 %>%
+  filter(is_district, subgroup == "all", cohort_count >= 10) %>%
+  left_join(district_size, by = c("district_id", "district_name")) %>%
+  mutate(size_category = case_when(
+    enrollment < 200 ~ "Small (<200)",
+    enrollment < 1000 ~ "Medium (200-999)",
+    enrollment < 5000 ~ "Large (1,000-4,999)",
+    TRUE ~ "Very Large (5,000+)"
+  )) %>%
+  filter(!is.na(size_category))
+
+size_summary <- grad_with_size %>%
+  group_by(size_category) %>%
+  summarize(
+    n_districts = n(),
+    avg_grad_rate = weighted.mean(grad_rate, cohort_count, na.rm = TRUE),
+    total_cohort = sum(cohort_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(size_category = factor(size_category,
+                                levels = c("Small (<200)", "Medium (200-999)",
+                                          "Large (1,000-4,999)", "Very Large (5,000+)")))
+
+size_summary
+```
+
+```{r rural-vs-urban-chart}
+ggplot(size_summary, aes(x = size_category, y = avg_grad_rate)) +
+  geom_col(fill = "#457B9D") +
+  geom_text(aes(label = paste0(round(avg_grad_rate * 100, 1), "%")),
+            vjust = -0.5, size = 4, fontface = "bold") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
+  labs(
+    title = "Graduation Rate by District Size",
+    subtitle = "Small rural districts outperform large urban districts",
+    x = "District Size (by enrollment)",
+    y = "Weighted Average Graduation Rate",
+    caption = "Source: ND Insights & NDDPI"
+  )
+```
+
 ## Learn More
 
 These insights just scratch the surface. Use `ndschooldata` to explore:
@@ -415,7 +597,7 @@ These insights just scratch the surface. Use `ndschooldata` to explore:
 library(ndschooldata)
 
 # Fetch all available years
-enr_all <- fetch_enr_multi(get_available_years(, use_cache = TRUE))
+enr_all <- fetch_enr_multi(get_available_years()$min_year:get_available_years()$max_year, use_cache = TRUE)
 
 # Explore your district
 enr_all %>%
