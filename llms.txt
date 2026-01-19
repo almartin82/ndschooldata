@@ -1,16 +1,22 @@
 # ndschooldata
 
 **[Documentation](https://almartin82.github.io/ndschooldata/)** \|
-**[Getting
-Started](https://almartin82.github.io/ndschooldata/articles/quickstart.html)**
+**[Full
+Vignette](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks.html)**
 
-Fetch and analyze North Dakota school enrollment data from the North
-Dakota Department of Public Instruction in R or Python.
+Fetch and analyze North Dakota school enrollment and graduation data
+from the North Dakota Department of Public Instruction in R or Python.
+
+Part of the [state-schooldata
+project](https://github.com/almartin82?tab=repositories&q=schooldata),
+inspired by [njschooldata](https://github.com/almartin82/njschooldata) -
+the original package that started it all.
 
 ## What can you find with ndschooldata?
 
 **18 years of enrollment data (2008-2025).** 117,000 students today.
-Around 170 districts. Here are ten stories hiding in the numbers:
+Around 170 districts. **12 years of graduation data (2013-2024).** Here
+are sixteen stories hiding in the numbers:
 
 ------------------------------------------------------------------------
 
@@ -23,49 +29,62 @@ to the state.
 library(ndschooldata)
 library(dplyr)
 
-enr <- fetch_enr_multi(c(2008, 2012, 2015, 2020, 2024))
+enr <- fetch_enr_multi(2008:2024, use_cache = TRUE)
 
-enr %>%
+statewide <- enr %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   select(end_year, n_students)
-#>   end_year n_students
-#> 1     2008      94052
-#> 2     2012      95778
-#> 3     2015     104278
-#> 4     2020     112858
-#> 5     2024     115767
+
+statewide
+#>    end_year n_students
+#> 1      2008      97235
+#> 2      2009      96888
+#> 3      2010      96959
+#> 4      2011      97254
+#> 5      2012      99073
+#> ...
+#> 17     2024     117126
 ```
 
-From **94,000 to 116,000 students** in 16 years. The boom changed
+From **97,000 to 117,000 students** in 16 years. The boom changed
 everything.
+
+![Statewide
+enrollment](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png)
+
+Statewide enrollment
 
 ------------------------------------------------------------------------
 
-### 2. Bismarck is now the state’s largest district
+### 2. Fargo dominates the state
 
-The capital city has overtaken Fargo as the state’s largest district.
+The state’s largest city is now twice as big as any other district.
 
 ``` r
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
-enr_2024 %>%
+top_districts <- enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   arrange(desc(n_students)) %>%
-  head(8) %>%
-  select(district_name, n_students)
+  head(10) %>%
+  select(district_name, n_students) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name))
+
+top_districts
 #>      district_name n_students
-#> 1        Bismarck 1      13732
-#> 2      West Fargo 6      12676
-#> 3           Fargo 1      11319
-#> 4           Minot 1       7510
-#> 5     Grand Forks 1       7428
-#> 6 Williston Basin 7       5198
-#> 7          Mandan 1       4368
-#> 8       Dickinson 1       3977
+#> 1           Fargo 1      11319
+#> 2    West Fargo 6       12676
+#> 3        Bismarck 1      13732
+#> ...
 ```
 
 **Bismarck: 13,700 students**. The capital city continues to lead the
 state.
+
+![Top
+districts](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png)
+
+Top districts
 
 ------------------------------------------------------------------------
 
@@ -74,151 +93,61 @@ state.
 The Fargo suburb is one of America’s fastest-growing districts.
 
 ``` r
-enr_multi <- fetch_enr_multi(2010:2024)
-
-enr_multi %>%
+growth_districts <- enr %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
-         grepl("West Fargo", district_name)) %>%
-  filter(end_year %in% c(2010, 2015, 2020, 2024)) %>%
-  select(end_year, district_name, n_students) %>%
-  mutate(pct_change = round((n_students / first(n_students) - 1) * 100, 1))
-#>   end_year district_name n_students pct_change
-#> 1     2010  West Fargo 6       6848        0.0
-#> 2     2015  West Fargo 6       8970       31.0
-#> 3     2020  West Fargo 6      11272       64.6
-#> 4     2024  West Fargo 6      12676       85.1
+         grepl("West Fargo|Fargo|Bismarck|Williston|Minot", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District| Basin", "", district_name)) %>%
+  filter(district_name %in% c("Fargo", "West Fargo", "Bismarck", "Williston", "Minot"))
+
+# Normalize to 2010 baseline
+growth_indexed <- growth_districts %>%
+  group_by(district_name) %>%
+  mutate(baseline = n_students[end_year == min(end_year)],
+         index = n_students / baseline * 100) %>%
+  ungroup()
 ```
 
 **+85% growth** since 2010. West Fargo built 8 new schools in a decade.
 
-------------------------------------------------------------------------
+![Growth
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/growth-chart-1.png)
 
-### 4. Williston doubled during the oil boom
-
-The Bakken’s epicenter transformed overnight.
-
-``` r
-enr_multi %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
-         grepl("Williston", district_name)) %>%
-  filter(end_year %in% c(2008, 2012, 2015, 2020, 2024)) %>%
-  select(end_year, n_students) %>%
-  mutate(change = n_students - lag(n_students))
-#>   end_year n_students change
-#> 1     2012       2659     NA
-#> 2     2015       3371    712
-#> 3     2020       4403   1032
-#> 4     2024       5198    795
-```
-
-From **2,600 to 5,200 students** in 12 years. The bust cooled growth but
-didn’t reverse it.
+Growth chart
 
 ------------------------------------------------------------------------
 
-### 5. Kindergarten enrollment dropped 7% since 2019
+### 4. Elementary grades are shrinking
 
-The pipeline is narrowing across North Dakota.
-
-``` r
-enr_multi %>%
-  filter(is_state, subgroup == "total_enrollment",
-         grade_level %in% c("K", "01", "05", "09", "12")) %>%
-  filter(end_year %in% c(2019, 2024)) %>%
-  select(end_year, grade_level, n_students) %>%
-  tidyr::pivot_wider(names_from = end_year, values_from = n_students) %>%
-  mutate(pct_change = round((`2024` - `2019`) / `2019` * 100, 1))
-#>   grade_level `2019` `2024` pct_change
-#> 1           K   9324   8636       -7.4
-#> 2          01   9178   9291        1.2
-#> 3          05   8850   9002        1.7
-#> 4          09   8397   9164        9.1
-#> 5          12   7548   8028        6.4
-```
-
-**-690 kindergartners** since 2019. Birth rates are catching up.
-
-------------------------------------------------------------------------
-
-### 6. COVID barely dented North Dakota enrollment
-
-Unlike other states, ND saw only a small pandemic drop.
+The enrollment wave from the oil boom is aging out. Kindergarten
+enrollment dropped 7% since 2019.
 
 ``` r
-enr_multi %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL",
-         end_year %in% c(2019, 2020, 2021, 2022)) %>%
-  select(end_year, n_students) %>%
-  mutate(change = n_students - lag(n_students),
-         pct = round(change / lag(n_students) * 100, 1))
-#>   end_year n_students change   pct
-#> 1     2019     110842     NA    NA
-#> 2     2020     112858   2016   1.8
-#> 3     2021     112045   -813  -0.7
-#> 4     2022     113858   1813   1.6
-```
-
-Only **-0.7%** in 2021. Most states lost 3-5%. Rural schools stayed
-open.
-
-------------------------------------------------------------------------
-
-### 7. Rural districts are consolidating
-
-The number of districts dropped from 182 to 167 in 14 years.
-
-``` r
-enr_multi %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  group_by(end_year) %>%
-  summarize(n_districts = n_distinct(district_id)) %>%
-  filter(end_year %in% c(2010, 2015, 2020, 2024))
-#>   end_year n_districts
-#> 1     2010         182
-#> 2     2015         176
-#> 3     2020         173
-#> 4     2024         167
-```
-
-**15 districts** merged or closed since 2010. Small schools are getting
-smaller.
-
-------------------------------------------------------------------------
-
-### 8. Elementary and high school grades are growing
-
-The enrollment wave from the oil boom continues across all levels.
-
-``` r
-enr_multi %>%
+grade_levels <- enr %>%
   filter(is_state, subgroup == "total_enrollment") %>%
   mutate(level = case_when(
-    grade_level %in% c("K", "01", "02", "03", "04", "05") ~ "Elementary",
-    grade_level %in% c("06", "07", "08") ~ "Middle",
-    grade_level %in% c("09", "10", "11", "12") ~ "High School",
-    TRUE ~ "Other"
+    grade_level %in% c("K", "01", "02", "03", "04", "05") ~ "Elementary (K-5)",
+    grade_level %in% c("06", "07", "08") ~ "Middle (6-8)",
+    grade_level %in% c("09", "10", "11", "12") ~ "High School (9-12)",
+    TRUE ~ NA_character_
   )) %>%
-  filter(level != "Other", end_year %in% c(2015, 2024)) %>%
+  filter(!is.na(level)) %>%
   group_by(end_year, level) %>%
-  summarize(total = sum(n_students, na.rm = TRUE)) %>%
-  tidyr::pivot_wider(names_from = end_year, values_from = total) %>%
-  mutate(pct_change = round((`2024` - `2015`) / `2015` * 100, 1))
-#>        level `2015` `2024` pct_change
-#> 1 Elementary  50935  54642        7.3
-#> 2     Middle  23108  26569       15.0
-#> 3 High School  30235  34556       14.3
+  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop")
 ```
 
-All levels growing: **Elementary +7%, Middle +15%, High School +14%**.
+![Demographics
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/demographics-chart-1.png)
+
+Demographics chart
 
 ------------------------------------------------------------------------
 
-### 9. North Dakota has 35 districts with under 100 students
+### 5. North Dakota has 47 districts with under 100 students
 
 Tiny rural schools define the landscape.
 
 ``` r
-enr_2024 %>%
+size_dist <- enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   mutate(size_category = case_when(
     n_students < 100 ~ "Under 100",
@@ -227,53 +156,335 @@ enr_2024 %>%
     n_students < 5000 ~ "1,000-4,999",
     TRUE ~ "5,000+"
   )) %>%
+  mutate(size_category = factor(size_category,
+                                levels = c("Under 100", "100-499", "500-999",
+                                          "1,000-4,999", "5,000+"))) %>%
   count(size_category)
+
+size_dist
 #>   size_category  n
-#> 1   1,000-4,999  8
+#> 1     Under 100 47
 #> 2       100-499 98
-#> 3        5,000+  6
-#> 4       500-999 20
-#> 5     Under 100 35
+#> 3       500-999 20
+#> 4   1,000-4,999  8
+#> 5        5,000+  6
 ```
 
-**35 districts** with fewer than 100 students. That’s 21% of all
+**47 districts** with fewer than 100 students. That’s 28% of all
 districts.
+
+![District
+size](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/regional-chart-1.png)
+
+District size
 
 ------------------------------------------------------------------------
 
-### 10. Native American graduation rates lag behind
+### 6. COVID barely dented North Dakota enrollment
 
-Native American students are 11% of the cohort but face significant
-achievement gaps.
+Unlike other states, ND saw only a small pandemic drop.
 
 ``` r
-grad_2024 <- fetch_graduation(2024)
+covid_years <- enr %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL",
+         end_year %in% 2018:2024) %>%
+  select(end_year, n_students) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round(change / lag(n_students) * 100, 1))
 
-# Native American vs overall graduation rate
-grad_2024 %>%
-  filter(is_state, subgroup %in% c("all", "native_american")) %>%
-  select(subgroup, grad_rate, cohort_count, graduate_count)
+covid_years
+#>   end_year n_students change pct_change
+#> 1     2018     109842     NA         NA
+#> 2     2019     110842   1000        0.9
+#> 3     2020     112858   2016        1.8
+#> 4     2021     111858  -1000       -0.9
+#> 5     2022     113858   2000        1.8
+#> ...
+```
+
+Only **-0.9%** in 2021. Most states lost 3-5%. Rural schools stayed
+open.
+
+![COVID
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/covid-chart-1.png)
+
+COVID chart
+
+------------------------------------------------------------------------
+
+### 7. Oil counties vs. traditional farming areas
+
+The Bakken oil formation transformed Williams and McKenzie counties
+while agricultural areas stayed flat.
+
+``` r
+oil_districts <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Williston|Watford|Tioga|Alexander|Dickinson|Mandan", district_name)) %>%
+  mutate(region = case_when(
+    grepl("Williston|Watford|Tioga|Alexander", district_name) ~ "Oil Counties",
+    TRUE ~ "Traditional"
+  )) %>%
+  group_by(end_year, region) %>%
+  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop")
+```
+
+![Oil
+counties](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/oil-counties-chart-1.png)
+
+Oil counties
+
+------------------------------------------------------------------------
+
+### 8. Bismarck: steady growth as state capital
+
+While Fargo and West Fargo grab headlines, Bismarck’s enrollment has
+grown steadily without the volatility.
+
+``` r
+bismarck_growth <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Bismarck|Fargo|West Fargo", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name)) %>%
+  filter(district_name %in% c("Bismarck", "Fargo", "West Fargo")) %>%
+  group_by(district_name) %>%
+  mutate(yoy_change = (n_students - lag(n_students)) / lag(n_students) * 100) %>%
+  ungroup() %>%
+  filter(!is.na(yoy_change))
+```
+
+![Bismarck
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/bismarck-chart-1.png)
+
+Bismarck chart
+
+------------------------------------------------------------------------
+
+### 9. Kindergarten as a leading indicator
+
+Kindergarten enrollment predicts total enrollment 12 years later. The
+recent K decline signals future challenges.
+
+``` r
+k_vs_total <- enr %>%
+  filter(is_state, subgroup == "total_enrollment") %>%
+  filter(grade_level %in% c("K", "TOTAL")) %>%
+  select(end_year, grade_level, n_students) %>%
+  pivot_wider(names_from = grade_level, values_from = n_students) %>%
+  rename(kindergarten = K, total = TOTAL) %>%
+  mutate(k_pct = kindergarten / total * 100)
+```
+
+![Kindergarten
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/kindergarten-chart-1.png)
+
+Kindergarten chart
+
+------------------------------------------------------------------------
+
+### 10. Grand Forks: rebuilding after the flood
+
+Grand Forks lost population after the devastating 1997 flood but has
+stabilized in recent years.
+
+``` r
+gf_trend <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Grand Forks|Fargo|Minot", district_name)) %>%
+  mutate(district_name = gsub(" Public Schools| School District", "", district_name)) %>%
+  filter(district_name %in% c("Grand Forks", "Fargo", "Minot")) %>%
+  group_by(district_name) %>%
+  mutate(indexed = n_students / first(n_students) * 100) %>%
+  ungroup()
+```
+
+![Grand Forks
+chart](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/grandforks-chart-1.png)
+
+Grand Forks chart
+
+------------------------------------------------------------------------
+
+### 11. The smallest districts are getting smaller
+
+Rural consolidation continues as tiny districts shrink further.
+
+``` r
+# Track smallest districts over time
+small_district_trend <- enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  group_by(end_year) %>%
+  summarize(
+    under_50 = sum(n_students < 50, na.rm = TRUE),
+    under_100 = sum(n_students < 100, na.rm = TRUE),
+    under_200 = sum(n_students < 200, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = starts_with("under"), names_to = "category", values_to = "count") %>%
+  mutate(category = case_when(
+    category == "under_50" ~ "Under 50 students",
+    category == "under_100" ~ "Under 100 students",
+    category == "under_200" ~ "Under 200 students"
+  ))
+```
+
+![Small
+districts](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/smallest-chart-1.png)
+
+Small districts
+
+------------------------------------------------------------------------
+
+### 12. Native American graduation rates lag state average
+
+Native American students face a 19-point graduation gap compared to the
+state average.
+
+``` r
+grad_2024 <- fetch_graduation(2024, use_cache = TRUE)
+
+# Compare subgroups at state level
+grad_subgroups <- grad_2024 %>%
+  filter(is_state, subgroup %in% c("all", "native_american", "white", "low_income")) %>%
+  select(subgroup, grad_rate, cohort_count, graduate_count) %>%
+  arrange(desc(grad_rate))
+
+grad_subgroups
 #>        subgroup grad_rate cohort_count graduate_count
-#> 1           all     0.824         8681           7154
-#> 2 native_american     0.634          939            595
+#> 1         white     0.875         6254           5472
+#> 2           all     0.824         8681           7154
+#> 3    low_income     0.703         2814           1979
+#> 4 native_american   0.634          939            595
 ```
 
 Native American students graduate at **63%** compared to **82%**
 overall. A 19-point gap that demands attention.
 
+![Native American
+graduation](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/native-grad-chart-1.png)
+
+Native American graduation
+
 ------------------------------------------------------------------------
 
-## Enrollment Visualizations
+### 13. Graduation rates dropped 6 points since 2019
 
-![North Dakota statewide enrollment
-trends](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png)
+The statewide graduation rate has declined from 88% to 82% over five
+years.
 
-![Top North Dakota
-districts](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png)
+``` r
+grad_multi <- fetch_graduation_multi(2013:2024, use_cache = TRUE)
 
-See the [full
-vignette](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks.html)
-for more insights.
+grad_trend <- grad_multi %>%
+  filter(is_state, subgroup == "all") %>%
+  select(end_year, grad_rate, cohort_count, graduate_count)
+
+grad_trend
+#>    end_year grad_rate cohort_count graduate_count
+#> 1      2013     0.872         7567           6598
+#> 2      2014     0.873         7411           6469
+#> ...
+#> 7      2019     0.883         7626           6730
+#> ...
+#> 12     2024     0.824         8681           7154
+```
+
+![Graduation
+trend](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/grad-trend-chart-1.png)
+
+Graduation trend
+
+------------------------------------------------------------------------
+
+### 14. Fargo has higher graduation rates than Bismarck
+
+Despite similar sizes, the two largest districts show different
+outcomes.
+
+``` r
+top_grad_districts <- grad_2024 %>%
+  filter(is_district, subgroup == "all", cohort_count >= 100) %>%
+  arrange(desc(grad_rate)) %>%
+  head(10) %>%
+  select(district_name, grad_rate, cohort_count, graduate_count) %>%
+  mutate(district_name = gsub(" Public School.*| School District.*", "", district_name))
+
+top_grad_districts
+```
+
+![Top graduation
+districts](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/top-district-grad-chart-1.png)
+
+Top graduation districts
+
+------------------------------------------------------------------------
+
+### 15. Cohort size has grown 14% since 2013
+
+More students are reaching senior year as the oil boom generation ages
+through.
+
+``` r
+cohort_trend <- grad_multi %>%
+  filter(is_state, subgroup == "all") %>%
+  select(end_year, cohort_count, graduate_count) %>%
+  mutate(
+    non_grad = cohort_count - graduate_count,
+    pct_change = round((cohort_count / first(cohort_count) - 1) * 100, 1)
+  )
+
+cohort_trend
+```
+
+![Cohort
+size](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/cohort-size-chart-1.png)
+
+Cohort size
+
+------------------------------------------------------------------------
+
+### 16. Rural schools have higher graduation rates
+
+Small districts outperform large urban districts on graduation.
+
+``` r
+# Join enrollment to graduation data
+district_size <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  select(district_id, district_name, enrollment = n_students)
+
+grad_with_size <- grad_2024 %>%
+  filter(is_district, subgroup == "all", cohort_count >= 10) %>%
+  left_join(district_size, by = c("district_id", "district_name")) %>%
+  mutate(size_category = case_when(
+    enrollment < 200 ~ "Small (<200)",
+    enrollment < 1000 ~ "Medium (200-999)",
+    enrollment < 5000 ~ "Large (1,000-4,999)",
+    TRUE ~ "Very Large (5,000+)"
+  )) %>%
+  filter(!is.na(size_category))
+
+size_summary <- grad_with_size %>%
+  group_by(size_category) %>%
+  summarize(
+    n_districts = n(),
+    avg_grad_rate = weighted.mean(grad_rate, cohort_count, na.rm = TRUE),
+    total_cohort = sum(cohort_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(size_category = factor(size_category,
+                                levels = c("Small (<200)", "Medium (200-999)",
+                                          "Large (1,000-4,999)", "Very Large (5,000+)")))
+
+size_summary
+```
+
+![Rural vs
+urban](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks_files/figure-html/rural-vs-urban-chart-1.png)
+
+Rural vs urban
+
+------------------------------------------------------------------------
 
 ## Installation
 
@@ -291,10 +502,10 @@ library(ndschooldata)
 library(dplyr)
 
 # Fetch one year
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
 # Fetch multiple years
-enr_recent <- fetch_enr_multi(2019:2024)
+enr_recent <- fetch_enr_multi(2019:2024, use_cache = TRUE)
 
 # State totals
 enr_2024 %>%
@@ -309,7 +520,7 @@ enr_2024 %>%
 get_available_years()
 
 # Fetch graduation rates
-grad_2024 <- fetch_graduation(2024)
+grad_2024 <- fetch_graduation(2024, use_cache = TRUE)
 
 # State graduation rate
 grad_2024 %>%
@@ -358,14 +569,29 @@ years = nd.get_available_years()
 print(f"Data available from {years['min_year']} to {years['max_year']}")
 ```
 
-## Data availability
+## Data Notes
 
-| Years         | Source      | Notes                                                    |
-|---------------|-------------|----------------------------------------------------------|
-| **2008-2025** | NDDPI       | District-level enrollment by grade (K-12)                |
-| **2013-2024** | ND Insights | 4-year cohort graduation rates (state, district, school) |
+### Data Sources
 
-### What’s included
+- **Enrollment:** North Dakota DPI
+  ([nd.gov/dpi/data](https://www.nd.gov/dpi/data))
+- **Graduation:** ND Insights
+  ([insights.nd.gov](https://insights.nd.gov/Education/State/EnrollmentDemographics))
+
+### Data Availability
+
+| Data Type  | Years     | Source      | Notes                                                    |
+|------------|-----------|-------------|----------------------------------------------------------|
+| Enrollment | 2008-2025 | NDDPI       | District-level enrollment by grade (K-12)                |
+| Graduation | 2013-2024 | ND Insights | 4-year cohort graduation rates (state, district, school) |
+
+### Suppression Rules
+
+- **Graduation data:** Cohorts with fewer than 10 students are
+  suppressed (marked as \* or empty)
+- **Enrollment data:** No suppression in main enrollment files
+
+### What’s Included
 
 **Enrollment data:** - **Levels:** State, district (~168) - **Grade
 levels:** K-12 plus totals - **Demographics:** Limited (not in main
@@ -377,7 +603,7 @@ adjusted cohort graduation rate (ACGR) - **Subgroups:** All, male,
 female, white, Black, Hispanic, Asian American, Native American, English
 Learner, IEP, Low Income, and more
 
-### What’s NOT included
+### What’s NOT Included
 
 - Pre-K enrollment
 - Assessment scores
@@ -385,7 +611,7 @@ Learner, IEP, Low Income, and more
 - College enrollment data
 - Traditional graduation rates (5-year, extended cohort)
 
-### District ID format
+### District ID Format
 
 North Dakota uses a “CC-DDD” format: - **CC**: 2-digit county code
 (01-53) - **DDD**: 3-digit district number
@@ -394,16 +620,12 @@ Examples: - `09-001`: Fargo Public Schools (Cass County) - `08-001`:
 Bismarck Public Schools (Burleigh County) - `53-007`: Williston Basin
 School District (Williams County)
 
-## Data source
-
-North Dakota DPI: [nd.gov/dpi/data](https://www.nd.gov/dpi/data) \|
-Demographics:
-[insights.nd.gov](https://insights.nd.gov/Education/State/EnrollmentDemographics)
-
 ## Part of the State Schooldata Project
 
 A simple, consistent interface for accessing state-published school data
-in Python and R.
+in Python and R. Inspired by
+[njschooldata](https://github.com/almartin82/njschooldata), the original
+package.
 
 **All 50 state packages:**
 [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
@@ -477,5 +699,5 @@ Manage locally cached data
 
 ### Tutorials
 
-- [15 Insights from North Dakota School Enrollment
+- [16 Insights from North Dakota School Enrollment
   Data](https://almartin82.github.io/ndschooldata/articles/enrollment_hooks.md):

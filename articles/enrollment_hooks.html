@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>15 Insights from North Dakota School Enrollment Data • ndschooldata</title>
+<title>16 Insights from North Dakota School Enrollment Data • ndschooldata</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="15 Insights from North Dakota School Enrollment Data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="16 Insights from North Dakota School Enrollment Data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -58,7 +58,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>15 Insights from North Dakota School Enrollment Data</h1>
+      <h1>16 Insights from North Dakota School Enrollment Data</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/almartin82/ndschooldata/blob/main/vignettes/enrollment_hooks.Rmd" class="external-link"><code>vignettes/enrollment_hooks.Rmd</code></a></small>
@@ -480,6 +480,236 @@ stabilized in recent years.</p>
 <p><img src="enrollment_hooks_files/figure-html/smallest-chart-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
+<h2 id="native-american-graduation-rates-lag-state-average">12. Native American Graduation Rates Lag State Average<a class="anchor" aria-label="anchor" href="#native-american-graduation-rates-lag-state-average"></a>
+</h2>
+<p>Native American students face a 19-point graduation gap compared to
+the state average.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grad_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_graduation.html">fetch_graduation</a></span><span class="op">(</span><span class="fl">2024</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare subgroups at state level</span></span>
+<span><span class="va">grad_subgroups</span> <span class="op">&lt;-</span> <span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"native_american"</span>, <span class="st">"white"</span>, <span class="st">"low_income"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">grad_subgroups</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 4</span></span></span>
+<span><span class="co">#&gt;   subgroup        grad_rate cohort_count graduate_count</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> white               0.875         <span style="text-decoration: underline;">6</span>420           <span style="text-decoration: underline;">5</span>620</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> all                 0.824         <span style="text-decoration: underline;">8</span>681           <span style="text-decoration: underline;">7</span>154</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> low_income          0.676         <span style="text-decoration: underline;">2</span>302           <span style="text-decoration: underline;">1</span>556</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> native_american     0.634          939            595</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">grad_subgroups</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">grad_rate</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#E63946"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">grad_rate</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">4</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"2024 Graduation Rates by Subgroup (State Level)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Native American students graduate at 63% vs. 82% overall"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"4-Year Graduation Rate"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Source: ND Insights (insights.nd.gov)"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/native-grad-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="graduation-rates-dropped-6-points-since-2019">13. Graduation Rates Dropped 6 Points Since 2019<a class="anchor" aria-label="anchor" href="#graduation-rates-dropped-6-points-since-2019"></a>
+</h2>
+<p>The statewide graduation rate has declined from 88% to 82% over five
+years.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grad_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_graduation_multi.html">fetch_graduation_multi</a></span><span class="op">(</span><span class="fl">2013</span><span class="op">:</span><span class="fl">2024</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">grad_trend</span> <span class="op">&lt;-</span> <span class="va">grad_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">grad_trend</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 4</span></span></span>
+<span><span class="co">#&gt;    end_year grad_rate cohort_count graduate_count</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     <span style="text-decoration: underline;">2</span>013     0.872         <span style="text-decoration: underline;">7</span>567           <span style="text-decoration: underline;">6</span>598</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     <span style="text-decoration: underline;">2</span>014     0.869         <span style="text-decoration: underline;">7</span>603           <span style="text-decoration: underline;">6</span>609</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     <span style="text-decoration: underline;">2</span>015     0.863         <span style="text-decoration: underline;">7</span>635           <span style="text-decoration: underline;">6</span>589</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     <span style="text-decoration: underline;">2</span>016     0.873         <span style="text-decoration: underline;">7</span>661           <span style="text-decoration: underline;">6</span>687</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     <span style="text-decoration: underline;">2</span>017     0.87          <span style="text-decoration: underline;">7</span>572           <span style="text-decoration: underline;">6</span>588</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     <span style="text-decoration: underline;">2</span>018     0.88          <span style="text-decoration: underline;">7</span>399           <span style="text-decoration: underline;">6</span>512</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     <span style="text-decoration: underline;">2</span>019     0.883         <span style="text-decoration: underline;">7</span>626           <span style="text-decoration: underline;">6</span>730</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     <span style="text-decoration: underline;">2</span>020     0.89          <span style="text-decoration: underline;">7</span>486           <span style="text-decoration: underline;">6</span>660</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     <span style="text-decoration: underline;">2</span>021     0.87          <span style="text-decoration: underline;">7</span>843           <span style="text-decoration: underline;">6</span>825</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     <span style="text-decoration: underline;">2</span>022     0.843         <span style="text-decoration: underline;">8</span>092           <span style="text-decoration: underline;">6</span>823</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     <span style="text-decoration: underline;">2</span>023     0.827         <span style="text-decoration: underline;">8</span>294           <span style="text-decoration: underline;">6</span>863</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     <span style="text-decoration: underline;">2</span>024     0.824         <span style="text-decoration: underline;">8</span>681           <span style="text-decoration: underline;">7</span>154</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">grad_trend</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#2E86AB"</span>, linewidth <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#2E86AB"</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">2019</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"gray50"</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">2019.3</span>, y <span class="op">=</span> <span class="fl">0.89</span>, label <span class="op">=</span> <span class="st">"Pre-COVID peak"</span>, hjust <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"gray40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"North Dakota 4-Year Graduation Rate: 2013-2024"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Dropped from 88% in 2019 to 82% in 2024"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Cohort Year"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"4-Year Graduation Rate"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Source: ND Insights (insights.nd.gov)"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/grad-trend-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="fargo-has-higher-graduation-rates-than-bismarck">14. Fargo Has Higher Graduation Rates Than Bismarck<a class="anchor" aria-label="anchor" href="#fargo-has-higher-graduation-rates-than-bismarck"></a>
+</h2>
+<p>Despite similar sizes, the two largest districts show different
+outcomes.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_grad_districts</span> <span class="op">&lt;-</span> <span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span>, <span class="va">cohort_count</span> <span class="op">&gt;=</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">grad_rate</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>district_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">" Public School.*| School District.*"</span>, <span class="st">""</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">top_grad_districts</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 4</span></span></span>
+<span><span class="co">#&gt;    district_name grad_rate cohort_count graduate_count</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> McKenzie Co 1     0.858          106             91</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Mandan 1          0.853          334            285</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Bismarck 1        0.845         <span style="text-decoration: underline;">1</span>057            893</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Grand Forks 1     0.828          599            496</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Devils Lake 1     0.823          130            107</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Jamestown 1       0.821          207            170</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Fargo 1           0.8            949            759</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> West Fargo 6      0.799          884            706</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Wahpeton 37       0.79           119             94</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Dickinson 1       0.78           296            231</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">top_grad_districts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">grad_rate</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#048A81"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">grad_rate</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Top 10 Districts by Graduation Rate (2024)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Minimum 100 students in cohort"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"4-Year Graduation Rate"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Source: ND Insights (insights.nd.gov)"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/top-district-grad-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="cohort-size-has-grown-14-since-2013">15. Cohort Size Has Grown 14% Since 2013<a class="anchor" aria-label="anchor" href="#cohort-size-has-grown-14-since-2013"></a>
+</h2>
+<p>More students are reaching senior year as the oil boom generation
+ages through.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cohort_trend</span> <span class="op">&lt;-</span> <span class="va">grad_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">cohort_count</span>, <span class="va">graduate_count</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    non_grad <span class="op">=</span> <span class="va">cohort_count</span> <span class="op">-</span> <span class="va">graduate_count</span>,</span>
+<span>    pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">cohort_count</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">cohort_count</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">cohort_trend</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 5</span></span></span>
+<span><span class="co">#&gt;    end_year cohort_count graduate_count non_grad pct_change</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     <span style="text-decoration: underline;">2</span>013         <span style="text-decoration: underline;">7</span>567           <span style="text-decoration: underline;">6</span>598      969        0  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     <span style="text-decoration: underline;">2</span>014         <span style="text-decoration: underline;">7</span>603           <span style="text-decoration: underline;">6</span>609      994        0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     <span style="text-decoration: underline;">2</span>015         <span style="text-decoration: underline;">7</span>635           <span style="text-decoration: underline;">6</span>589     <span style="text-decoration: underline;">1</span>046        0.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     <span style="text-decoration: underline;">2</span>016         <span style="text-decoration: underline;">7</span>661           <span style="text-decoration: underline;">6</span>687      974        1.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     <span style="text-decoration: underline;">2</span>017         <span style="text-decoration: underline;">7</span>572           <span style="text-decoration: underline;">6</span>588      984        0.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     <span style="text-decoration: underline;">2</span>018         <span style="text-decoration: underline;">7</span>399           <span style="text-decoration: underline;">6</span>512      887       -<span style="color: #BB0000;">2.2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     <span style="text-decoration: underline;">2</span>019         <span style="text-decoration: underline;">7</span>626           <span style="text-decoration: underline;">6</span>730      896        0.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     <span style="text-decoration: underline;">2</span>020         <span style="text-decoration: underline;">7</span>486           <span style="text-decoration: underline;">6</span>660      826       -<span style="color: #BB0000;">1.1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     <span style="text-decoration: underline;">2</span>021         <span style="text-decoration: underline;">7</span>843           <span style="text-decoration: underline;">6</span>825     <span style="text-decoration: underline;">1</span>018        3.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     <span style="text-decoration: underline;">2</span>022         <span style="text-decoration: underline;">8</span>092           <span style="text-decoration: underline;">6</span>823     <span style="text-decoration: underline;">1</span>269        6.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     <span style="text-decoration: underline;">2</span>023         <span style="text-decoration: underline;">8</span>294           <span style="text-decoration: underline;">6</span>863     <span style="text-decoration: underline;">1</span>431        9.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     <span style="text-decoration: underline;">2</span>024         <span style="text-decoration: underline;">8</span>681           <span style="text-decoration: underline;">7</span>154     <span style="text-decoration: underline;">1</span>527       14.7</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cohort_long</span> <span class="op">&lt;-</span> <span class="va">cohort_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">graduate_count</span>, <span class="va">non_grad</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">graduate_count</span>, <span class="va">non_grad</span><span class="op">)</span>,</span>
+<span>               names_to <span class="op">=</span> <span class="st">"status"</span>, values_to <span class="op">=</span> <span class="st">"count"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"graduate_count"</span>, <span class="st">"Graduated"</span>, <span class="st">"Did Not Graduate"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cohort_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">count</span>, fill <span class="op">=</span> <span class="va">status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Graduated"</span> <span class="op">=</span> <span class="st">"#2A9D8F"</span>, <span class="st">"Did Not Graduate"</span> <span class="op">=</span> <span class="st">"#E76F51"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"4-Year Cohort Outcomes Over Time"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cohort grew 14% but non-graduates increased faster"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Cohort Year"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Number of Students"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"Outcome"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Source: ND Insights (insights.nd.gov)"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/cohort-size-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="rural-schools-have-higher-graduation-rates">16. Rural Schools Have Higher Graduation Rates<a class="anchor" aria-label="anchor" href="#rural-schools-have-higher-graduation-rates"></a>
+</h2>
+<p>Small districts outperform large urban districts on graduation.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Join enrollment to graduation data</span></span>
+<span><span class="va">district_size</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_id</span>, <span class="va">district_name</span>, enrollment <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">grad_with_size</span> <span class="op">&lt;-</span> <span class="va">grad_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"all"</span>, <span class="va">cohort_count</span> <span class="op">&gt;=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">district_size</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"district_id"</span>, <span class="st">"district_name"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">enrollment</span> <span class="op">&lt;</span> <span class="fl">200</span> <span class="op">~</span> <span class="st">"Small (&lt;200)"</span>,</span>
+<span>    <span class="va">enrollment</span> <span class="op">&lt;</span> <span class="fl">1000</span> <span class="op">~</span> <span class="st">"Medium (200-999)"</span>,</span>
+<span>    <span class="va">enrollment</span> <span class="op">&lt;</span> <span class="fl">5000</span> <span class="op">~</span> <span class="st">"Large (1,000-4,999)"</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"Very Large (5,000+)"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">size_category</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">size_summary</span> <span class="op">&lt;-</span> <span class="va">grad_with_size</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">size_category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span></span>
+<span>    n_districts <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    avg_grad_rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/weighted.mean.html" class="external-link">weighted.mean</a></span><span class="op">(</span><span class="va">grad_rate</span>, <span class="va">cohort_count</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    total_cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">cohort_count</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">size_category</span>,</span>
+<span>                                levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Small (&lt;200)"</span>, <span class="st">"Medium (200-999)"</span>,</span>
+<span>                                          <span class="st">"Large (1,000-4,999)"</span>, <span class="st">"Very Large (5,000+)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">size_summary</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   size_category       n_districts avg_grad_rate total_cohort</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Very Large (5,000+)         123         0.824         <span style="text-decoration: underline;">8</span>555</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">size_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">size_category</span>, y <span class="op">=</span> <span class="va">avg_grad_rate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#457B9D"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">avg_grad_rate</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">4</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Graduation Rate by District Size"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Small rural districts outperform large urban districts"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"District Size (by enrollment)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Weighted Average Graduation Rate"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Source: ND Insights &amp; NDDPI"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/rural-vs-urban-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
 <h2 id="learn-more">Learn More<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
 <p>These insights just scratch the surface. Use
@@ -489,12 +719,12 @@ stabilized in recent years.</p>
 <li>Grade-level patterns within districts</li>
 <li>Regional comparisons across the state</li>
 </ul>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get started</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/ndschooldata">ndschooldata</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fetch all available years</span></span>
-<span><span class="va">enr_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_available_years.html">get_available_years</a></span><span class="op">(</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">enr_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">min_year</span><span class="op">:</span><span class="fu"><a href="../reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">max_year</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Explore your district</span></span>
 <span><span class="va">enr_all</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -503,7 +733,7 @@ stabilized in recent years.</p>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -529,18 +759,21 @@ stabilized in recent years.</p>
 <span><span class="co">#&gt; [1] ggplot2_4.0.1      tidyr_1.3.2        dplyr_1.1.4        ndschooldata_0.1.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     tidyselect_1.2.1  </span></span>
-<span><span class="co">#&gt;  [5] jquerylib_0.1.4    systemfonts_1.3.1  scales_1.4.0       textshaping_1.0.4 </span></span>
-<span><span class="co">#&gt;  [9] readxl_1.4.5       yaml_2.3.12        fastmap_1.2.0      R6_2.6.1          </span></span>
-<span><span class="co">#&gt; [13] labeling_0.4.3     generics_0.1.4     curl_7.0.0         knitr_1.51        </span></span>
-<span><span class="co">#&gt; [17] tibble_3.3.1       desc_1.4.3         bslib_0.9.0        pillar_1.11.1     </span></span>
-<span><span class="co">#&gt; [21] RColorBrewer_1.1-3 rlang_1.1.7        cachem_1.1.0       xfun_0.55         </span></span>
-<span><span class="co">#&gt; [25] fs_1.6.6           sass_0.4.10        S7_0.2.1           cli_3.6.5         </span></span>
-<span><span class="co">#&gt; [29] withr_3.0.2        pkgdown_2.2.0      magrittr_2.0.4     digest_0.6.39     </span></span>
-<span><span class="co">#&gt; [33] grid_4.5.2         rappdirs_0.3.3     lifecycle_1.0.5    vctrs_0.7.0       </span></span>
-<span><span class="co">#&gt; [37] evaluate_1.0.5     glue_1.8.0         cellranger_1.1.0   farver_2.1.2      </span></span>
-<span><span class="co">#&gt; [41] codetools_0.2-20   ragg_1.5.0         httr_1.4.7         rmarkdown_2.30    </span></span>
-<span><span class="co">#&gt; [45] purrr_1.2.1        tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] utf8_1.2.6         rappdirs_0.3.4     sass_0.4.10        generics_0.1.4    </span></span>
+<span><span class="co">#&gt;  [5] stringi_1.8.7      hms_1.1.4          digest_0.6.39      magrittr_2.0.4    </span></span>
+<span><span class="co">#&gt;  [9] evaluate_1.0.5     grid_4.5.2         RColorBrewer_1.1-3 fastmap_1.2.0     </span></span>
+<span><span class="co">#&gt; [13] cellranger_1.1.0   jsonlite_2.0.0     httr_1.4.7         purrr_1.2.1       </span></span>
+<span><span class="co">#&gt; [17] scales_1.4.0       codetools_0.2-20   textshaping_1.0.4  jquerylib_0.1.4   </span></span>
+<span><span class="co">#&gt; [21] cli_3.6.5          crayon_1.5.3       rlang_1.1.7        bit64_4.6.0-1     </span></span>
+<span><span class="co">#&gt; [25] withr_3.0.2        cachem_1.1.0       yaml_2.3.12        parallel_4.5.2    </span></span>
+<span><span class="co">#&gt; [29] tools_4.5.2        tzdb_0.5.0         curl_7.0.0         vctrs_0.7.0       </span></span>
+<span><span class="co">#&gt; [33] R6_2.6.1           lifecycle_1.0.5    stringr_1.6.0      fs_1.6.6          </span></span>
+<span><span class="co">#&gt; [37] bit_4.6.0          vroom_1.6.7        ragg_1.5.0         pkgconfig_2.0.3   </span></span>
+<span><span class="co">#&gt; [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.9.0       </span></span>
+<span><span class="co">#&gt; [45] gtable_0.3.6       glue_1.8.0         systemfonts_1.3.1  xfun_0.55         </span></span>
+<span><span class="co">#&gt; [49] tibble_3.3.1       tidyselect_1.2.1   knitr_1.51         farver_2.1.2      </span></span>
+<span><span class="co">#&gt; [53] htmltools_0.5.9    rmarkdown_2.30     labeling_0.4.3     readr_2.1.6       </span></span>
+<span><span class="co">#&gt; [57] compiler_4.5.2     S7_0.2.1           readxl_1.4.5</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
