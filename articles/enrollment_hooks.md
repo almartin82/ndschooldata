@@ -765,8 +765,8 @@ sessionInfo()
 #> [25] withr_3.0.2        cachem_1.1.0       yaml_2.3.12        parallel_4.5.2    
 #> [29] tools_4.5.2        tzdb_0.5.0         curl_7.0.0         vctrs_0.7.1       
 #> [33] R6_2.6.1           lifecycle_1.0.5    stringr_1.6.0      fs_1.6.6          
-#> [37] bit_4.6.0          vroom_1.6.7        ragg_1.5.0         pkgconfig_2.0.3   
-#> [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.9.0       
+#> [37] bit_4.6.0          vroom_1.7.0        ragg_1.5.0         pkgconfig_2.0.3   
+#> [41] desc_1.4.3         pkgdown_2.2.0      pillar_1.11.1      bslib_0.10.0      
 #> [45] gtable_0.3.6       glue_1.8.0         systemfonts_1.3.1  xfun_0.56         
 #> [49] tibble_3.3.1       tidyselect_1.2.1   knitr_1.51         farver_2.1.2      
 #> [53] htmltools_0.5.9    rmarkdown_2.30     labeling_0.4.3     readr_2.1.6       
